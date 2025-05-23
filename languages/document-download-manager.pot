@@ -1,0 +1,35 @@
+# Copyright (C) 2025 Gunjan Jaswal
+# This file is distributed under the GPL v2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Document Download Manager 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/document-download-manager\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2025-05-23T11:26:00+05:30\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.7.0\n"
+"X-Domain: document-download-manager\n"
+
+#. Plugin Name of the plugin
+msgid "Document Download Manager"
+msgstr ""
+
+#. Plugin URI of the plugin
+msgid "https://gunjanjaswal.me/plugins/document-download-manager"
+msgstr ""
+
+#. Description of the plugin
+msgid "Manage Excel and PDF document downloads with user information collection via popup form"
+msgstr ""
+
+#. Author of the plugin
+msgid "Gunjan Jaswal"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://gunjanjaswal.me"
+msgstr ""

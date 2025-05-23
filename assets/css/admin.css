@@ -1,0 +1,62 @@
+/* Document Download Manager - Admin Styles */
+
+.ddm-instructions {
+    margin-top: 30px;
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 5px;
+    border-left: 4px solid #D4AF37;
+}
+
+.ddm-instructions h2 {
+    margin-top: 0;
+}
+
+.ddm-instructions ol {
+    margin-left: 20px;
+}
+
+/* Form table styles */
+.form-table th {
+    width: 200px;
+}
+
+.form-table .button.remove-file {
+    color: #b32d2e;
+}
+
+.form-table .button.remove-file:hover {
+    color: #fff;
+    background: #b32d2e;
+}
+
+/* Export button */
+#export-csv {
+    margin-top: 10px;
+}
+
+/* Records table */
+.wp-list-table .column-id {
+    width: 50px;
+}
+
+.wp-list-table .column-time {
+    width: 150px;
+}
+
+.wp-list-table .column-name,
+.wp-list-table .column-email {
+    width: 150px;
+}
+
+.wp-list-table .column-actions {
+    width: 80px;
+}
+
+.wp-list-table .delete {
+    color: #b32d2e;
+}
+
+.wp-list-table .delete:hover {
+    color: #dc3232;
+}
