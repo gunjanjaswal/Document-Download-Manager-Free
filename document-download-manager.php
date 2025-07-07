@@ -1,13 +1,13 @@
 <?php
 /**
- * Plugin Name: Document Download Manager With Mailchimp (Free)
- * Plugin URI: https://gunjanjaswal.me/plugins/document-download-manager-with-mailchimp
- * Description: Manage Excel and PDF document downloads with user information collection via popup form. Pro version includes Mailchimp integration for email marketing.
+ * Plugin Name: Document Download Manager
+ * Plugin URI: https://wordpress.org/plugins/document-download-manager/
+ * Description: A plugin to manage and track document downloads with email marketing integration that works exclusively with Mailchimp.
  * Version: 1.0.0
- * Requires at least: 5.0
- * Requires PHP: 7.2
  * Author: Gunjan Jaswaal
- * Author URI: https://gunjanjaswal.me
+ * Author URI: https://profiles.wordpress.org/gunjanjaswal/
+ * License: GPL-2.0+
+ * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain: document-download-manager
  * Domain Path: /languages
  * License: GPL v2 or later
@@ -37,14 +37,25 @@ define('DDM_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('DDM_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('DDM_VERSION', '1.0.0');
 
-// WordPress.org version - no premium features
-define('DDM_IS_PREMIUM', false);
+// This is the WordPress.org version with no premium features
 
 // Include required files
-require_once DDM_PLUGIN_DIR . 'includes/class-document-download-manager-premium.php';
 require_once DDM_PLUGIN_DIR . 'includes/class-document-download-manager.php';
 require_once DDM_PLUGIN_DIR . 'includes/class-document-download-manager-admin.php';
 require_once DDM_PLUGIN_DIR . 'includes/class-document-download-manager-public.php';
+require_once DDM_PLUGIN_DIR . 'includes/class-document-download-manager-premium.php';
+
+/**
+ * Helper function to get the upgrade URL
+ * This ensures the function is available even if the premium class is not loaded
+ *
+ * @return string The URL to upgrade to the premium version
+ */
+if (!function_exists('ddm_get_upgrade_url')) {
+    function ddm_get_upgrade_url() {
+        return 'https://checkout.freemius.com/plugin/19168/plan/31773/';
+    }
+}
 
 // Register activation, deactivation, and uninstall hooks
 register_activation_hook(__FILE__, array('Document_Download_Manager', 'activate'));
@@ -52,8 +63,8 @@ register_deactivation_hook(__FILE__, array('Document_Download_Manager', 'deactiv
 register_uninstall_hook(__FILE__, array('Document_Download_Manager', 'uninstall'));
 
 // Initialize the plugin
-function run_document_download_manager() {
+function document_download_manager_initialize() {
     $plugin = new Document_Download_Manager();
     $plugin->run();
 }
-run_document_download_manager();
+document_download_manager_initialize();

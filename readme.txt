@@ -1,6 +1,6 @@
-=== Document Download Manager With Mailchimp - WordPress.org Edition ===
+=== Document Download Manager ===
 Contributors: gunjanjaswal
-Donate link: https://gunjanjaswal.me/
+Donate link: https://wordpress.org/plugins/document-download-manager/
 Tags: document, download, excel, pdf, form, lead generation
 Requires at least: 5.0
 Tested up to: 6.8
@@ -9,13 +9,11 @@ Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Manage Excel and PDF document downloads with user information collection via popup form. Pro version available with Mailchimp integration for email marketing.
+Manage Excel and PDF document downloads with user information collection via popup form.
 
 == Description ==
 
-Document Download Manager With Mailchimp is a powerful yet simple plugin that helps you manage your downloadable documents (Excel and PDF files) while collecting user information before allowing downloads.
-
-This is the free version available on WordPress.org. A Pro version is available that seamlessly integrates with Mailchimp to grow your email list with every document download.
+Document Download Manager is a powerful yet simple plugin that helps you manage your downloadable documents (Excel and PDF files) while collecting user information before allowing downloads.
 
 ### Key Features
 
@@ -26,16 +24,7 @@ This is the free version available on WordPress.org. A Pro version is available 
 * **Responsive Design** - Works on all devices
 * **GDPR Compliant** - Clear consent for data collection
 
-### Pro Features
 
-* **Mailchimp Integration** - Automatically add document downloaders to your Mailchimp audience
-* **Document-based Tags** - Tag subscribers based on which documents they download
-* **Sync Existing Records** - One-click sync of all existing download records to Mailchimp
-* **Premium Support** - Priority support for all your questions and issues
-
-### Mailchimp Integration Disclaimer
-
-*This plugin is not affiliated with, endorsed, or sponsored by Mailchimp®. Mailchimp® is a registered trademark of The Rocket Science Group LLC. This plugin uses the Mailchimp API but is not certified or officially tested by Mailchimp. All Mailchimp® logos and trademarks displayed on this plugin are property of The Rocket Science Group LLC.*
 
 ### How It Works
 
@@ -47,15 +36,16 @@ This is the free version available on WordPress.org. A Pro version is available 
 
 ### Shortcode Usage
 
-Use any of these shortcode formats:
+Use the shortcode `[ddmanager_document_download]` to display a download button for your documents.
 
-`[document_download id="your-document-id"]`
-`[excel_download id="your-document-id"]`
-`[excel_download your-document-id]`
+**Basic Usage:**
+`[ddmanager_document_download id="document-1"]`
+
+**Note:** The older shortcodes `[document_download]` and `[excel_download]` are still supported for backward compatibility, but we recommend using the new shortcode for future implementations.
 
 You can also customize the button text:
 
-`[document_download id="your-document-id" text="Get Your Free Copy"]`
+`[ddmanager_document_download id="your-document-id" text="Get Your Free Copy"]`
 
 == Installation ==
 
@@ -88,6 +78,10 @@ Yes, the plugin includes a consent checkbox and clear information about how the 
 2. Download button on the front-end
 3. User information popup form
 4. Download records page
+
+== External Services ==
+
+This plugin does not connect to any external services.
 
 == Changelog ==
 

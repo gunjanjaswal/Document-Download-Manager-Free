@@ -5,6 +5,57 @@
     'use strict';
 
     $(document).ready(function() {
+        // Email Marketing API Key functionality
+        if ($('#ddm_toggle_api_key').length) {
+            // Toggle API key visibility
+            $('#ddm_toggle_api_key').on('click', function() {
+                var $display = $('#ddm_email_api_key_display');
+                if ($display.attr('type') === 'password') {
+                    $display.attr('type', 'text');
+                    $(this).find('.dashicons').removeClass('dashicons-visibility').addClass('dashicons-hidden');
+                } else {
+                    $display.attr('type', 'password');
+                    $(this).find('.dashicons').removeClass('dashicons-hidden').addClass('dashicons-visibility');
+                }
+            });
+
+            // Edit API key
+            $('#ddm_edit_api_key').on('click', function() {
+                $('.ddm-api-key-wrapper').hide();
+                $('.ddm-api-key-edit').show();
+                $('#ddm_email_api_key_edit').focus();
+            });
+
+            // Save API key
+            $('#ddm_save_api_key').on('click', function() {
+                var newKey = $('#ddm_email_api_key_edit').val();
+                if (newKey) {
+                    // Update hidden input with actual value
+                    $('#ddm_email_api_key').val(newKey);
+                    
+                    // Show masked version in display field
+                    var maskedKey = '';
+                    if (newKey.length > 8) {
+                        maskedKey = newKey.substring(0, 4) + newKey.substring(4, newKey.length - 4).replace(/./g, '*') + newKey.substring(newKey.length - 4);
+                    } else {
+                        maskedKey = newKey.replace(/./g, '*');
+                    }
+                    $('#ddm_email_api_key_display').val(maskedKey);
+                    
+                    // Reset edit field and hide edit form
+                    $('#ddm_email_api_key_edit').val('');
+                    $('.ddm-api-key-edit').hide();
+                    $('.ddm-api-key-wrapper').show();
+                }
+            });
+
+            // Cancel API key edit
+            $('#ddm_cancel_api_key').on('click', function() {
+                $('#ddm_email_api_key_edit').val('');
+                $('.ddm-api-key-edit').hide();
+                $('.ddm-api-key-wrapper').show();
+            });
+        }
         // Add new document file row
         $('#add-document-file').on('click', function() {
             var timestamp = new Date().getTime();

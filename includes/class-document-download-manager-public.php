@@ -124,9 +124,15 @@ class Document_Download_Manager_Public {
      * Process download AJAX request
      */
     public function process_download() {
-        // Check nonce
-        if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'ddm_nonce')) {
-            wp_send_json_error('Invalid security token.');
+        // Check nonce with proper sanitization
+        if (!isset($_POST['nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'])), 'ddm_nonce')) {
+            wp_send_json_error(esc_html__('Invalid security token.', 'document-download-manager'));
+            wp_die();
+        }
+        
+        // Check user permissions - anyone can download but we still check for bots
+        if (!is_user_logged_in() && empty($_SERVER['HTTP_USER_AGENT'])) {
+            wp_send_json_error(esc_html__('Invalid request.', 'document-download-manager'));
             wp_die();
         }
         
@@ -134,21 +140,28 @@ class Document_Download_Manager_Public {
         $required_fields = array('name', 'email', 'file_id', 'file_title', 'file_url');
         foreach ($required_fields as $field) {
             if (!isset($_POST[$field]) || empty($_POST[$field])) {
-                wp_send_json_error('Missing required field: ' . $field);
+                wp_send_json_error(esc_html__('Missing required field: ', 'document-download-manager') . esc_html($field));
                 wp_die();
             }
         }
         
         // Sanitize input
-        $name = sanitize_text_field($_POST['name']);
-        $email = sanitize_email($_POST['email']);
-        $file_id = sanitize_text_field($_POST['file_id']);
-        $file_title = sanitize_text_field($_POST['file_title']);
-        $file_url = esc_url_raw($_POST['file_url']);
+        $name = sanitize_text_field(wp_unslash($_POST['name']));
+        $email = sanitize_email(wp_unslash($_POST['email']));
+        $file_id = sanitize_text_field(wp_unslash($_POST['file_id']));
+        $file_title = sanitize_text_field(wp_unslash($_POST['file_title']));
+        $file_url = esc_url_raw(wp_unslash($_POST['file_url']));
+        $consent = isset($_POST['consent']) ? (bool) $_POST['consent'] : false;
         
         // Validate email
         if (!is_email($email)) {
-            wp_send_json_error('Invalid email address.');
+            wp_send_json_error(esc_html__('Invalid email address.', 'document-download-manager'));
+            wp_die();
+        }
+        
+        // Validate URL
+        if (empty($file_url) || !filter_var($file_url, FILTER_VALIDATE_URL)) {
+            wp_send_json_error(esc_html__('Invalid file URL.', 'document-download-manager'));
             wp_die();
         }
         
@@ -176,16 +189,8 @@ class Document_Download_Manager_Public {
             // Clear the all records cache to ensure the admin page shows the latest data
             wp_cache_delete('ddm_all_records', 'document-download-manager');
             
-            // Check if Mailchimp integration is enabled
-            $mailchimp_enabled = get_option('ddm_mailchimp_enabled', '0');
-            
-            if ($mailchimp_enabled === '1') {
-                // Check if user has premium access via Freemius
-                if (function_exists('ddm_is_premium') && ddm_is_premium()) {
-                    // Send data to Mailchimp
-                    $this->send_to_mailchimp($name, $email, $file_title);
-                }
-            }
+            // Email marketing integration is available in the Pro version
+            // This is just a placeholder in the free version
         }
         
         // Return success response with file URL
@@ -198,137 +203,11 @@ class Document_Download_Manager_Public {
     }
     
     /**
-     * Send user data to Mailchimp
-     *
-     * @param string $name User's name
-     * @param string $email User's email
-     * @param string $file_title Title of the downloaded file
-     * @return bool Success or failure
+     * Placeholder for email marketing functionality
+     * This function is a stub in the free version
      */
-    private function send_to_mailchimp($name, $email, $file_title) {
-        // Get Mailchimp settings
-        $api_key = get_option('ddm_mailchimp_api_key', '');
-        $list_id = get_option('ddm_mailchimp_list_id', '');
-        
-        // If API key or list ID is missing, return false
-        if (empty($api_key) || empty($list_id)) {
-            return false;
-        }
-        
-        // Extract API server from API key (e.g., us1, us2, etc.)
-        $api_parts = explode('-', $api_key);
-        if (count($api_parts) != 2) {
-            return false; // Invalid API key format
-        }
-        $server = $api_parts[1];
-        
-        // Split name into first and last name
-        $name_parts = explode(' ', $name, 2);
-        $first_name = $name_parts[0];
-        $last_name = isset($name_parts[1]) ? $name_parts[1] : '';
-        
-        // Prepare data for Mailchimp API
-        // Create a sanitized version of the file title for tagging
-        $document_tag = sanitize_title($file_title);
-        
-        // Prepare tags - include both a generic tag and the specific document name
-        $tags = array(
-            'Document Download',
-            'Downloaded: ' . $file_title
-        );
-        
-        $data = array(
-            'email_address' => $email,
-            'status' => 'subscribed',
-            'merge_fields' => array(
-                'FNAME' => $first_name,
-                'LNAME' => $last_name
-            ),
-            'tags' => $tags
-        );
-        
-        // Convert data to JSON
-        $json_data = json_encode($data);
-        
-        // Set up API endpoint
-        $api_endpoint = "https://{$server}.api.mailchimp.com/3.0/lists/{$list_id}/members/";
-        
-        // Set up request arguments
-        $args = array(
-            'method' => 'POST',
-            'timeout' => 30,
-            'headers' => array(
-                'Content-Type' => 'application/json',
-                'Authorization' => 'Basic ' . base64_encode('user:' . $api_key)
-            ),
-            'body' => $json_data
-        );
-        
-        // Make the API request
-        $response = wp_remote_post($api_endpoint, $args);
-        
-        // Check if request was successful
-        if (is_wp_error($response)) {
-            // Log error for debugging
-            error_log('Mailchimp API Error: ' . $response->get_error_message());
-            return false;
-        }
-        
-        // Get response code
-        $response_code = wp_remote_retrieve_response_code($response);
-        
-        // If subscriber already exists (response code 400), update their info instead
-        if ($response_code == 400) {
-            // Create MD5 hash of lowercase email for the API endpoint
-            $subscriber_hash = md5(strtolower($email));
-            
-            // Update endpoint for existing subscriber
-            $api_endpoint = "https://{$server}.api.mailchimp.com/3.0/lists/{$list_id}/members/{$subscriber_hash}";
-            
-            // Update data to use PUT method
-            $args['method'] = 'PUT';
-            
-            // Make the update request
-            $response = wp_remote_request($api_endpoint, $args);
-            
-            if (is_wp_error($response)) {
-                error_log('Mailchimp API Update Error: ' . $response->get_error_message());
-                return false;
-            }
-            
-            $response_code = wp_remote_retrieve_response_code($response);
-        }
-        
-        // If successful (response code 200 or 201), add a note about the downloaded document
-        if ($response_code == 200 || $response_code == 201) {
-            // Create MD5 hash of lowercase email for the API endpoint
-            $subscriber_hash = md5(strtolower($email));
-            
-            // Set up notes endpoint
-            $notes_endpoint = "https://{$server}.api.mailchimp.com/3.0/lists/{$list_id}/members/{$subscriber_hash}/notes";
-            
-            // Prepare note data
-            $note_data = array(
-                'note' => "Downloaded document: {$file_title} on " . current_time('Y-m-d H:i:s')
-            );
-            
-            // Set up request arguments for note
-            $note_args = array(
-                'method' => 'POST',
-                'timeout' => 30,
-                'headers' => array(
-                    'Content-Type' => 'application/json',
-                    'Authorization' => 'Basic ' . base64_encode('user:' . $api_key)
-                ),
-                'body' => json_encode($note_data)
-            );
-            
-            // Make the API request to add a note
-            wp_remote_post($notes_endpoint, $note_args);
-            
-            return true;
-        }
-        
+    private function send_to_email_service($name, $email, $file_title) {
+        // This functionality is only available in the Pro version
         return false;
     }
 }

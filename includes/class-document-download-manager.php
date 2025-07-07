@@ -32,8 +32,9 @@ class Document_Download_Manager {
         add_action('wp_enqueue_scripts', array($this->public, 'enqueue_scripts'));
         add_action('wp_ajax_ddm_process_download', array($this->public, 'process_download'));
         add_action('wp_ajax_nopriv_ddm_process_download', array($this->public, 'process_download'));
+        add_shortcode('ddmanager_document_download', array($this->public, 'download_shortcode'));
+        // Keep these shortcodes for backward compatibility
         add_shortcode('document_download', array($this->public, 'download_shortcode'));
-        // Keep excel_download shortcode for backward compatibility
         add_shortcode('excel_download', array($this->public, 'download_shortcode'));
     }
 

@@ -3,13 +3,31 @@
  * Admin-specific functionality of the plugin.
  */
 class Document_Download_Manager_Admin {
-
+    
+    /**
+     * Initialize the class
+     */
+    public function __construct() {
+        // Enqueue admin styles
+        add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_styles'));
+    }
+    
+    /**
+     * Enqueue admin styles
+     */
+    public function enqueue_admin_styles($hook) {
+        // Only load on our plugin pages
+        if (strpos($hook, 'document-download') !== false) {
+            wp_enqueue_style('ddm-admin-styles', plugin_dir_url(dirname(__FILE__)) . 'assets/css/admin-styles.css', array(), DDM_VERSION);
+        }
+    }
+    
     /**
      * Add admin menu page
      */
     public function add_admin_menu() {
         add_menu_page(
-            'Document Download Manager With Mailchimp', 
+            'Document Download Manager', 
             'Document Downloads', 
             'manage_options', 
             'document-download-manager', 
@@ -27,14 +45,14 @@ class Document_Download_Manager_Admin {
             array($this, 'display_records_page')
         );
         
-        // Add Mailchimp Settings page
+        // Add Email Marketing Settings page
         add_submenu_page(
             'document-download-manager',
-            'Mailchimp Settings',
-            'Mailchimp Settings',
+            'Email Marketing',
+            'Email Marketing',
             'manage_options',
-            'document-download-mailchimp',
-            array($this, 'display_mailchimp_settings')
+            'document-download-email-marketing',
+            array($this, 'display_email_marketing_settings')
         );
     }
     
@@ -44,10 +62,10 @@ class Document_Download_Manager_Admin {
     public function register_settings() {
         register_setting('ddm_settings', 'ddm_document_files', array($this, 'sanitize_document_files'));
         
-        // Register Mailchimp settings
-        register_setting('ddm_mailchimp_settings', 'ddm_mailchimp_api_key', array($this, 'sanitize_text_field'));
-        register_setting('ddm_mailchimp_settings', 'ddm_mailchimp_list_id', array($this, 'sanitize_text_field'));
-        register_setting('ddm_mailchimp_settings', 'ddm_mailchimp_enabled', array($this, 'sanitize_checkbox'));
+        // Register Email Marketing settings
+        register_setting('ddm_email_marketing_settings', 'ddm_email_api_key', array($this, 'sanitize_text_field'));
+        register_setting('ddm_email_marketing_settings', 'ddm_email_list_id', array($this, 'sanitize_text_field'));
+        register_setting('ddm_email_marketing_settings', 'ddm_email_enabled', array($this, 'sanitize_checkbox'));
     }
     
     /**
@@ -68,19 +86,23 @@ class Document_Download_Manager_Admin {
      * Sanitize document files settings
      */
     public function sanitize_document_files($input) {
-        $new_input = array();
+        $sanitized_input = array();
         
-        if (isset($input) && is_array($input)) {
-            foreach ($input as $key => $file) {
-                if (!empty($file['title']) && !empty($file['url'])) {
-                    $new_input[$key]['title'] = sanitize_text_field($file['title']);
-                    $new_input[$key]['url'] = esc_url_raw($file['url']);
-                    $new_input[$key]['id'] = isset($file['id']) ? sanitize_text_field($file['id']) : sanitize_title($file['title']);
-                }
+        // Sanitize each field in the array
+        foreach ($input as $index => $file) {
+            if (isset($file['title']) && isset($file['url']) && !empty($file['url'])) {
+                $sanitized_file = array();
+                
+                // Sanitize each field appropriately
+                $sanitized_file['title'] = sanitize_text_field($file['title']);
+                $sanitized_file['url'] = esc_url_raw($file['url']);
+                $sanitized_file['id'] = isset($file['id']) ? sanitize_text_field($file['id']) : sanitize_title($file['title']);
+                
+                $sanitized_input[] = $sanitized_file;
             }
         }
         
-        return $new_input;
+        return $sanitized_input;
     }
     
     /**
@@ -97,12 +119,12 @@ class Document_Download_Manager_Admin {
         wp_enqueue_script('ddm-admin-js', DDM_PLUGIN_URL . 'assets/js/admin.js', array('jquery'), DDM_VERSION, true);
         
         // Add inline script for API key masking
-        if (isset($_GET['page']) && $_GET['page'] === 'document-download-mailchimp') {
+        if (isset($_GET['page']) && $_GET['page'] === 'document-download-email-marketing') {
             $api_key_script = "
                 jQuery(document).ready(function($) {
                     // Toggle API key visibility
                     $('#ddm_toggle_api_key').on('click', function() {
-                        var input = $('#ddm_mailchimp_api_key_display');
+                        var input = $('#ddm_email_api_key_display');
                         var icon = $(this).find('.dashicons');
                         
                         if (input.attr('type') === 'password') {
@@ -116,39 +138,43 @@ class Document_Download_Manager_Admin {
                     
                     // Edit API key
                     $('#ddm_edit_api_key').on('click', function() {
+                        $('.ddm-api-key-wrapper').hide();
                         $('.ddm-api-key-edit').show();
-                        $('#ddm_mailchimp_api_key_edit').focus();
+                        $('#ddm_email_api_key_edit').focus();
                     });
                     
                     // Cancel API key edit
                     $('#ddm_cancel_api_key').on('click', function() {
+                        $('.ddm-api-key-wrapper').show();
                         $('.ddm-api-key-edit').hide();
-                        $('#ddm_mailchimp_api_key_edit').val('');
+                        $('#ddm_email_api_key_edit').val('');
                     });
                     
                     // Save API key
                     $('#ddm_save_api_key').on('click', function() {
-                        var newKey = $('#ddm_mailchimp_api_key_edit').val();
+                        var newKey = $('#ddm_email_api_key_edit').val();
+                        
                         if (newKey) {
-                            // Update hidden input with actual value
-                            $('#ddm_mailchimp_api_key').val(newKey);
+                            $('#ddm_email_api_key').val(newKey);
                             
-                            // Update display field with masked value
-                            var keyLength = newKey.length;
+                            // Create masked display version
                             var displayValue = '';
+                            var keyLength = newKey.length;
                             
                             if (keyLength > 8) {
-                                displayValue = newKey.substring(0, 4) + '*'.repeat(keyLength - 8) + newKey.substring(keyLength - 4);
+                                displayValue = newKey.substring(0, 4) + 
+                                    Array(keyLength - 7).join('*') + 
+                                    newKey.substring(keyLength - 4);
                             } else {
-                                displayValue = '*'.repeat(keyLength);
+                                displayValue = Array(keyLength + 1).join('*');
                             }
                             
-                            $('#ddm_mailchimp_api_key_display').val(displayValue);
-                            
-                            // Hide edit section
-                            $('.ddm-api-key-edit').hide();
-                            $('#ddm_mailchimp_api_key_edit').val('');
+                            $('#ddm_email_api_key_display').val(displayValue);
                         }
+                        
+                        $('.ddm-api-key-wrapper').show();
+                        $('.ddm-api-key-edit').hide();
+                        $('#ddm_email_api_key_edit').val('');
                     });
                 });
             ";
@@ -286,254 +312,51 @@ class Document_Download_Manager_Admin {
     }
     
     /**
-     * Display Mailchimp settings page
+     * Display Email Marketing settings page
      */
-    public function display_mailchimp_settings() {
+    public function display_email_marketing_settings() {
         // Check if user has proper permissions
         if (!current_user_can('manage_options')) {
             return;
         }
         
-        // Check if user has premium access
-        $has_premium = function_exists('ddm_is_premium') ? ddm_is_premium() : false;
-        
-        // Process sync request for existing records
-        if (isset($_POST['ddm_sync_mailchimp']) && isset($_POST['submit_sync']) && 
-            check_admin_referer('ddm_sync_mailchimp_action', 'ddm_sync_mailchimp_nonce')) {
-            
-            // Check if Mailchimp is configured
-            $api_key = get_option('ddm_mailchimp_api_key', '');
-            $list_id = get_option('ddm_mailchimp_list_id', '');
-            
-            if (empty($api_key) || empty($list_id)) {
-                echo '<div class="notice notice-error"><p>' . 
-                    esc_html__('Mailchimp API key and List ID must be configured before syncing.', 'document-download-manager') . 
-                    '</p></div>';
-            } else {
-                // Get all download records from the database
-                global $wpdb;
-                $table_name = $wpdb->prefix . 'ddm_downloads';
-                $records = $wpdb->get_results(
-                    "SELECT * FROM {$table_name} ORDER BY time DESC",
-                    ARRAY_A
-                );
-                
-                if (empty($records)) {
-                    echo '<div class="notice notice-warning"><p>' . 
-                        esc_html__('No download records found to sync.', 'document-download-manager') . 
-                        '</p></div>';
-                } else {
-                    // Initialize counters
-                    $success_count = 0;
-                    $error_count = 0;
-                    
-                    // Create an instance of the public class to use its send_to_mailchimp method
-                    require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-document-download-manager-public.php';
-                    $public_instance = new Document_Download_Manager_Public();
-                    
-                    // Process each record
-                    foreach ($records as $record) {
-                        $result = $this->sync_record_to_mailchimp(
-                            $record['name'],
-                            $record['email'],
-                            $record['file_name'],
-                            $api_key,
-                            $list_id
-                        );
-                        
-                        if ($result) {
-                            $success_count++;
-                        } else {
-                            $error_count++;
-                        }
-                        
-                        // Add a small delay to avoid rate limiting
-                        usleep(100000); // 100ms delay
-                    }
-                    
-                    // Display results
-                    echo '<div class="notice notice-success"><p>' . 
-                        sprintf(
-                            esc_html__('Sync completed. Successfully added/updated %1$d records. Failed: %2$d records.', 'document-download-manager'),
-                            $success_count,
-                            $error_count
-                        ) . 
-                        '</p></div>';
-                }
-            }
-        }
-        
-        // Process form submission
-        if (isset($_POST['submit']) && check_admin_referer('ddm_mailchimp_settings-options')) {
-            // API Key
-            if (isset($_POST['ddm_mailchimp_api_key'])) {
-                $api_key = sanitize_text_field(wp_unslash($_POST['ddm_mailchimp_api_key']));
-                update_option('ddm_mailchimp_api_key', $api_key);
-            }
-            
-            // List ID
-            if (isset($_POST['ddm_mailchimp_list_id'])) {
-                $list_id = sanitize_text_field(wp_unslash($_POST['ddm_mailchimp_list_id']));
-                update_option('ddm_mailchimp_list_id', $list_id);
-            }
-            
-            // Enabled/Disabled
-            $enabled = isset($_POST['ddm_mailchimp_enabled']) ? '1' : '0';
-            update_option('ddm_mailchimp_enabled', $enabled);
-            
-            echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Mailchimp settings saved successfully!', 'document-download-manager') . '</p></div>';
-        }
-        
-        // Get current settings
-        $api_key = get_option('ddm_mailchimp_api_key', '');
-        $list_id = get_option('ddm_mailchimp_list_id', '');
-        $enabled = get_option('ddm_mailchimp_enabled', '0');
-        
         ?>
         <div class="wrap">
-            <h1><?php echo esc_html__('Mailchimp Integration Settings', 'document-download-manager'); ?></h1>
+            <h1><?php echo esc_html__('Email Marketing Integration', 'document-download-manager'); ?></h1>
             
-            <?php if (!$has_premium) : ?>
-                <div class="ddm-premium-notice">
-                    <h2><?php echo esc_html__('Pro Feature: Mailchimp Integration', 'document-download-manager'); ?></h2>
-                    <p><?php echo esc_html__('Enhance your document downloads with Mailchimp integration to grow your email list. The Pro version allows you to:', 'document-download-manager'); ?></p>
-                    <ul style="list-style-type: disc; margin-left: 20px;">
-                        <li><?php echo esc_html__('Automatically add document downloaders to your Mailchimp audience', 'document-download-manager'); ?></li>
-                        <li><?php echo esc_html__('Tag subscribers based on which documents they download', 'document-download-manager'); ?></li>
-                        <li><?php echo esc_html__('Sync existing download records to Mailchimp with one click', 'document-download-manager'); ?></li>
-                    </ul>
-                    <p>
-                        <a href="<?php echo esc_url(ddm_get_upgrade_url()); ?>" class="button button-primary">
-                            <?php echo esc_html__('Upgrade to Pro', 'document-download-manager'); ?>
-                        </a>
-                    </p>
-                </div>
-                
-                <style>
-                    .ddm-premium-notice {
-                        background: #fff;
-                        border-left: 4px solid #00a0d2;
-                        box-shadow: 0 1px 1px rgba(0,0,0,.04);
-                        margin: 20px 0;
-                        padding: 15px;
-                    }
-                    .ddm-premium-notice h2 {
-                        margin-top: 0;
-                        color: #00a0d2;
-                    }
-                    .form-table input[type="text"],
-                    .form-table input[type="checkbox"] {
-                        opacity: 0.7;
-                    }
-                </style>
-            <?php endif; ?>
-            
-            <form method="post" action="">
-                <?php settings_fields('ddm_mailchimp_settings'); ?>
-                
-                <table class="form-table">
-                    <tr>
-                        <th scope="row">
-                            <label for="ddm_mailchimp_enabled"><?php echo esc_html__('Enable Mailchimp Integration', 'document-download-manager'); ?></label>
-                        </th>
-                        <td>
-                            <input type="checkbox" id="ddm_mailchimp_enabled" name="ddm_mailchimp_enabled" value="1" <?php checked('1', $enabled); ?> <?php echo !$has_premium ? 'disabled' : ''; ?> />
-                            <p class="description"><?php echo esc_html__('Enable to add users to your Mailchimp list when they download documents.', 'document-download-manager'); ?></p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">
-                            <label for="ddm_mailchimp_api_key"><?php echo esc_html__('Mailchimp API Key', 'document-download-manager'); ?></label>
-                        </th>
-                        <td>
-                            <?php if ($has_premium): ?>
-                                <?php 
-                                // If API key exists, show masked version
-                                $display_value = '';
-                                if (!empty($api_key)) {
-                                    // Show first 4 and last 4 characters, mask the rest
-                                    $key_length = strlen($api_key);
-                                    if ($key_length > 8) {
-                                        $display_value = substr($api_key, 0, 4) . str_repeat('*', $key_length - 8) . substr($api_key, -4);
-                                    } else {
-                                        $display_value = str_repeat('*', $key_length);
-                                    }
-                                }
-                                ?>
-                                <div class="ddm-api-key-wrapper">
-                                    <input type="password" id="ddm_mailchimp_api_key_display" value="<?php echo esc_attr($display_value); ?>" class="regular-text" readonly />
-                                    <input type="hidden" id="ddm_mailchimp_api_key" name="ddm_mailchimp_api_key" value="<?php echo esc_attr($api_key); ?>" />
-                                    <button type="button" id="ddm_toggle_api_key" class="button button-secondary">
-                                        <span class="dashicons dashicons-visibility"></span>
-                                    </button>
-                                    <button type="button" id="ddm_edit_api_key" class="button button-secondary">
-                                        <span class="dashicons dashicons-edit"></span> <?php echo esc_html__('Edit', 'document-download-manager'); ?>
-                                    </button>
-                                </div>
-                                <div class="ddm-api-key-edit" style="display:none; margin-top: 10px;">
-                                    <input type="text" id="ddm_mailchimp_api_key_edit" class="regular-text" placeholder="<?php echo esc_attr__('Enter new API key', 'document-download-manager'); ?>" />
-                                    <button type="button" id="ddm_save_api_key" class="button button-secondary">
-                                        <span class="dashicons dashicons-yes"></span> <?php echo esc_html__('Save', 'document-download-manager'); ?>
-                                    </button>
-                                    <button type="button" id="ddm_cancel_api_key" class="button button-secondary">
-                                        <span class="dashicons dashicons-no"></span> <?php echo esc_html__('Cancel', 'document-download-manager'); ?>
-                                    </button>
-                                </div>
-                            <?php else: ?>
-                                <input type="text" id="ddm_mailchimp_api_key" name="ddm_mailchimp_api_key" value="" placeholder="<?php echo esc_attr__('Enter your Mailchimp API key (Premium feature)', 'document-download-manager'); ?>" class="regular-text" disabled />
-                            <?php endif; ?>
-                            <p class="description"><?php echo esc_html__('Enter your Mailchimp API key. You can find this in your Mailchimp account under Account > Extras > API Keys.', 'document-download-manager'); ?></p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">
-                            <label for="ddm_mailchimp_list_id"><?php echo esc_html__('Mailchimp List/Audience ID', 'document-download-manager'); ?></label>
-                        </th>
-                        <td>
-                            <?php if ($has_premium): ?>
-                                <input type="text" id="ddm_mailchimp_list_id" name="ddm_mailchimp_list_id" value="<?php echo esc_attr($list_id); ?>" class="regular-text" />
-                            <?php else: ?>
-                                <input type="text" id="ddm_mailchimp_list_id" name="ddm_mailchimp_list_id" value="" placeholder="<?php echo esc_attr__('Enter your Mailchimp List/Audience ID (Premium feature)', 'document-download-manager'); ?>" class="regular-text" disabled />
-                            <?php endif; ?>
-                            <p class="description"><?php echo esc_html__('Enter your Mailchimp List/Audience ID. You can find this in Mailchimp under Audience > Settings > Audience name and defaults.', 'document-download-manager'); ?></p>
-                        </td>
-                    </tr>
-                </table>
-                
-                <p class="submit">
-                    <input type="submit" name="submit" id="submit" class="button button-primary" value="<?php echo esc_attr__('Save Changes', 'document-download-manager'); ?>" <?php echo !$has_premium ? 'disabled' : ''; ?> />
+            <div class="ddm-premium-notice">
+                <h2><?php echo esc_html__('Email Marketing Integration', 'document-download-manager'); ?></h2>
+                <p><?php echo esc_html__('Email marketing integration is available in the Pro version of this plugin.', 'document-download-manager'); ?></p>
+                <p><?php echo esc_html__('The Pro version allows you to connect with email marketing services to grow your email list.', 'document-download-manager'); ?></p>
+                <p>
+                    <a href="https://checkout.freemius.com/plugin/19168/plan/31773/" class="button button-primary">
+                        <?php echo esc_html__('Get Pro Version', 'document-download-manager'); ?>
+                    </a>
                 </p>
-            </form>
-            
-            <div class="ddm-disclaimer" style="margin-top: 30px; padding: 15px; background-color: #f8f8f8; border-left: 4px solid #ddd;">
-                <h3><?php echo esc_html__('Mailchimp Integration Disclaimer', 'document-download-manager'); ?></h3>
-                <p><em><?php echo esc_html__('This plugin is not affiliated with, endorsed, or sponsored by Mailchimp®. Mailchimp® is a registered trademark of The Rocket Science Group LLC. This plugin uses the Mailchimp API but is not certified or officially tested by Mailchimp. All Mailchimp® logos and trademarks displayed on this plugin are property of The Rocket Science Group LLC.', 'document-download-manager'); ?></em></p>
             </div>
-
-            <div class="ddm-instructions">
-                <h2><?php echo esc_html__('How Mailchimp Integration Works', 'document-download-manager'); ?></h2>
-                <ol>
-                    <li><?php echo esc_html__('When a user downloads a document, their name and email will be added to your Mailchimp list.', 'document-download-manager'); ?></li>
-                    <li><?php echo esc_html__('The document title will be stored as a note in the subscriber\'s profile.', 'document-download-manager'); ?></li>
-                    <li><?php echo esc_html__('Make sure your form includes name and email fields for this to work.', 'document-download-manager'); ?></li>
-                </ol>
-                
-                <h3><?php echo esc_html__('Sync Existing Download Records', 'document-download-manager'); ?></h3>
-                <p><?php echo esc_html__('You can push all your existing download records to Mailchimp with the button below:', 'document-download-manager'); ?></p>
-                
-                <form method="post" action="">
-                    <?php wp_nonce_field('ddm_sync_mailchimp_action', 'ddm_sync_mailchimp_nonce'); ?>
-                    <input type="hidden" name="ddm_sync_mailchimp" value="1">
-                    <p>
-                        <input type="submit" name="submit_sync" class="button button-secondary" value="<?php echo esc_attr__('Sync Existing Records to Mailchimp', 'document-download-manager'); ?>" <?php echo !$has_premium ? 'disabled' : ''; ?>>
-                    </p>
-                </form>
-                
-                <h3><?php echo esc_html__('Troubleshooting', 'document-download-manager'); ?></h3>
-                <ul>
-                    <li><?php echo esc_html__('If users aren\'t being added to your list, verify your API key and List ID.', 'document-download-manager'); ?></li>
-                    <li><?php echo esc_html__('Check that the Mailchimp integration is enabled using the checkbox above.', 'document-download-manager'); ?></li>
-                    <li><?php echo esc_html__('Ensure your Mailchimp account is active and in good standing.', 'document-download-manager'); ?></li>
+            
+            <style>
+                .ddm-premium-notice {
+                    background: #fff;
+                    border-left: 4px solid #00a0d2;
+                    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+                    margin: 20px 0;
+                    padding: 15px;
+                }
+                .ddm-premium-notice h2 {
+                    margin-top: 0;
+                    color: #00a0d2;
+                }
+            </style>
+            
+            <div class="ddm-feature-list">
+                <h3><?php echo esc_html__('Pro Version Features', 'document-download-manager'); ?></h3>
+                <ul style="list-style-type: disc; padding-left: 20px;">
+                    <li><?php echo esc_html__('Connect with popular email marketing services', 'document-download-manager'); ?></li>
+                    <li><?php echo esc_html__('Automatically add document downloaders to your email list', 'document-download-manager'); ?></li>
+                    <li><?php echo esc_html__('Segment subscribers based on downloaded documents', 'document-download-manager'); ?></li>
+                    <li><?php echo esc_html__('One-click sync of all existing download records', 'document-download-manager'); ?></li>
+                    <li><?php echo esc_html__('Priority support for all your questions', 'document-download-manager'); ?></li>
                 </ul>
             </div>
         </div>
@@ -541,114 +364,18 @@ class Document_Download_Manager_Admin {
     }
     
     /**
-     * Display records page
-     */
-    /**
-     * Sync a single download record to Mailchimp
+     * Placeholder for email marketing functionality
+     * This is a stub function for the free version
      *
      * @param string $name User's name
      * @param string $email User's email
      * @param string $file_title Title of the downloaded file
-     * @param string $api_key Mailchimp API key
-     * @param string $list_id Mailchimp List ID
-     * @return bool Success or failure
+     * @param string $api_key Email marketing API key
+     * @param string $list_id Email marketing List ID
+     * @return bool Always returns false in free version
      */
-    private function sync_record_to_mailchimp($name, $email, $file_title, $api_key, $list_id) {
-        // Validate email
-        if (empty($email) || !is_email($email)) {
-            return false;
-        }
-        
-        // Extract API server from API key (e.g., us1, us2, etc.)
-        $api_parts = explode('-', $api_key);
-        if (count($api_parts) != 2) {
-            return false; // Invalid API key format
-        }
-        $server = $api_parts[1];
-        
-        // Split name into first and last name
-        $name_parts = explode(' ', $name, 2);
-        $first_name = $name_parts[0];
-        $last_name = isset($name_parts[1]) ? $name_parts[1] : '';
-        
-        // Prepare tags - include both a generic tag and the specific document name
-        $tags = array(
-            'Document Download',
-            'Downloaded: ' . $file_title,
-            'Synced Record'
-        );
-        
-        // Prepare data for Mailchimp API
-        $data = array(
-            'email_address' => $email,
-            'status' => 'subscribed',
-            'merge_fields' => array(
-                'FNAME' => $first_name,
-                'LNAME' => $last_name
-            ),
-            'tags' => $tags
-        );
-        
-        // Convert data to JSON
-        $json_data = json_encode($data);
-        
-        // Create MD5 hash of lowercase email for the API endpoint (for upsert operation)
-        $subscriber_hash = md5(strtolower($email));
-        
-        // Set up API endpoint for PUT operation (update or insert)
-        $api_endpoint = "https://{$server}.api.mailchimp.com/3.0/lists/{$list_id}/members/{$subscriber_hash}";
-        
-        // Set up request arguments
-        $args = array(
-            'method' => 'PUT', // Use PUT for upsert operation
-            'timeout' => 30,
-            'headers' => array(
-                'Content-Type' => 'application/json',
-                'Authorization' => 'Basic ' . base64_encode('user:' . $api_key)
-            ),
-            'body' => $json_data
-        );
-        
-        // Make the API request
-        $response = wp_remote_request($api_endpoint, $args);
-        
-        // Check if request was successful
-        if (is_wp_error($response)) {
-            // Log error for debugging
-            error_log('Mailchimp API Error: ' . $response->get_error_message());
-            return false;
-        }
-        
-        // Get response code
-        $response_code = wp_remote_retrieve_response_code($response);
-        
-        // If successful (response code 200), add a note about the downloaded document
-        if ($response_code == 200) {
-            // Set up notes endpoint
-            $notes_endpoint = "https://{$server}.api.mailchimp.com/3.0/lists/{$list_id}/members/{$subscriber_hash}/notes";
-            
-            // Prepare note data
-            $note_data = array(
-                'note' => "Synced record: Downloaded {$file_title} (original download date unknown)"
-            );
-            
-            // Set up request arguments for note
-            $note_args = array(
-                'method' => 'POST',
-                'timeout' => 30,
-                'headers' => array(
-                    'Content-Type' => 'application/json',
-                    'Authorization' => 'Basic ' . base64_encode('user:' . $api_key)
-                ),
-                'body' => json_encode($note_data)
-            );
-            
-            // Make the API request to add a note
-            wp_remote_post($notes_endpoint, $note_args);
-            
-            return true;
-        }
-        
+    private function sync_record_to_email_service($name, $email, $file_title, $api_key, $list_id) {
+        // This functionality is only available in the Pro version
         return false;
     }
     

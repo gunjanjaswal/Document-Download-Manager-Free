@@ -1,4 +1,4 @@
-# Document Download Manager With Mailchimp (Free)
+# Document Download Manager
 
 A WordPress plugin to manage Excel and PDF document downloads with user information collection via popup form.
 
@@ -24,10 +24,10 @@ Use the shortcode `[document_download id="your-document-id"]` to display a downl
 
 ## Pro Version
 
-The Pro version includes Mailchimp integration for email marketing, allowing you to:
-- Automatically add document downloaders to your Mailchimp audience
-- Tag subscribers based on which documents they download
-- Sync existing download records to Mailchimp with one click
+The Pro version includes email marketing integration that works with Mailchimp, allowing you to:
+- Automatically add document downloaders to your Mailchimp email list. Access via admin menu or directly at `/wp-admin/admin.php?page=document-download-email-marketing`
+- Segment subscribers based on which documents they download
+- Sync existing download records to your email platform with one click
 
 ## Author
 

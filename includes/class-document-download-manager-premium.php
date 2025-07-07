@@ -1,6 +1,6 @@
 <?php
 /**
- * Premium feature compatibility for WordPress.org version
+ * Compatibility functions for the WordPress.org version
  */
 
 // Exit if accessed directly
@@ -9,48 +9,30 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Premium feature compatibility class
- * This class provides compatibility functions for the WordPress.org version
- * to replace Freemius functionality
+ * These functions provide compatibility for code that might check for premium features
+ * They always return false since this is the free version
  */
-class Document_Download_Manager_Premium {
-    
-    /**
-     * Check if premium features are available
-     * Always returns false in the WordPress.org version
-     */
-    public static function is_premium() {
-        return false;
-    }
-    
-    /**
-     * Get upgrade URL
-     * Returns the URL to the Freemius checkout page for the premium version
-     */
-    public static function get_upgrade_url() {
-        // Use the general plugin URL which will show all available plans
-        return 'https://checkout.freemius.com/mode/dialog/plugin/19168/';
-    }
-    
-    /**
-     * Check if a specific premium feature is available
-     * Always returns false in the WordPress.org version
-     */
-    public static function has_feature($feature) {
-        return false;
-    }
-}
 
 /**
- * Compatibility function for ddm_fs()->is_paying()
+ * Check if premium features are available
+ * Always returns false in the WordPress.org version
  */
 function ddm_is_premium() {
-    return Document_Download_Manager_Premium::is_premium();
+    return false;
 }
 
 /**
- * Compatibility function for ddm_fs()->get_upgrade_url()
+ * Get upgrade URL
+ * Returns the URL to the premium version checkout page
  */
 function ddm_get_upgrade_url() {
-    return Document_Download_Manager_Premium::get_upgrade_url();
+    return 'https://checkout.freemius.com/plugin/19168/plan/31773/';
+}
+
+/**
+ * Check if a specific premium feature is available
+ * Always returns false in the WordPress.org version
+ */
+function ddm_has_feature($feature) {
+    return false;
 }
