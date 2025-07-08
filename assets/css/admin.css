@@ -1,6 +1,6 @@
 /* Document Download Manager - Admin Styles */
 
-.ddm-instructions {
+.docdownman-instructions {
     margin-top: 30px;
     background-color: #f8f9fa;
     padding: 20px;
@@ -8,11 +8,11 @@
     border-left: 4px solid #D4AF37;
 }
 
-.ddm-instructions h2 {
+.docdownman-instructions h2 {
     margin-top: 0;
 }
 
-.ddm-instructions ol {
+.docdownman-instructions ol {
     margin-left: 20px;
 }
 

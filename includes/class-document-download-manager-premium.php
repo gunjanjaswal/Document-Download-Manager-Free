@@ -17,22 +17,28 @@ if (!defined('ABSPATH')) {
  * Check if premium features are available
  * Always returns false in the WordPress.org version
  */
-function ddm_is_premium() {
+function docdownman_is_premium() {
     return false;
 }
+
+
 
 /**
  * Get upgrade URL
  * Returns the URL to the premium version checkout page
  */
-function ddm_get_upgrade_url() {
+function docdownman_get_upgrade_url() {
     return 'https://checkout.freemius.com/plugin/19168/plan/31773/';
 }
+
+
 
 /**
  * Check if a specific premium feature is available
  * Always returns false in the WordPress.org version
  */
-function ddm_has_feature($feature) {
+function docdownman_has_feature($feature) {
     return false;
 }
+
+

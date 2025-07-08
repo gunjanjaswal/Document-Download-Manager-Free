@@ -6,10 +6,10 @@
 
     $(document).ready(function() {
         // Email Marketing API Key functionality
-        if ($('#ddm_toggle_api_key').length) {
+        if ($('#docdownman_toggle_api_key').length) {
             // Toggle API key visibility
-            $('#ddm_toggle_api_key').on('click', function() {
-                var $display = $('#ddm_email_api_key_display');
+            $('#docdownman_toggle_api_key').on('click', function() {
+                var $display = $('#docdownman_email_api_key_display');
                 if ($display.attr('type') === 'password') {
                     $display.attr('type', 'text');
                     $(this).find('.dashicons').removeClass('dashicons-visibility').addClass('dashicons-hidden');
@@ -20,18 +20,18 @@
             });
 
             // Edit API key
-            $('#ddm_edit_api_key').on('click', function() {
-                $('.ddm-api-key-wrapper').hide();
-                $('.ddm-api-key-edit').show();
-                $('#ddm_email_api_key_edit').focus();
+            $('#docdownman_edit_api_key').on('click', function() {
+                $('.docdownman-api-key-wrapper').hide();
+                $('.docdownman-api-key-edit').show();
+                $('#docdownman_email_api_key_edit').focus();
             });
 
             // Save API key
-            $('#ddm_save_api_key').on('click', function() {
-                var newKey = $('#ddm_email_api_key_edit').val();
+            $('#docdownman_save_api_key').on('click', function() {
+                var newKey = $('#docdownman_email_api_key_edit').val();
                 if (newKey) {
                     // Update hidden input with actual value
-                    $('#ddm_email_api_key').val(newKey);
+                    $('#docdownman_email_api_key').val(newKey);
                     
                     // Show masked version in display field
                     var maskedKey = '';
@@ -40,20 +40,20 @@
                     } else {
                         maskedKey = newKey.replace(/./g, '*');
                     }
-                    $('#ddm_email_api_key_display').val(maskedKey);
+                    $('#docdownman_email_api_key_display').val(maskedKey);
                     
                     // Reset edit field and hide edit form
-                    $('#ddm_email_api_key_edit').val('');
-                    $('.ddm-api-key-edit').hide();
-                    $('.ddm-api-key-wrapper').show();
+                    $('#docdownman_email_api_key_edit').val('');
+                    $('.docdownman-api-key-edit').hide();
+                    $('.docdownman-api-key-wrapper').show();
                 }
             });
 
             // Cancel API key edit
-            $('#ddm_cancel_api_key').on('click', function() {
-                $('#ddm_email_api_key_edit').val('');
-                $('.ddm-api-key-edit').hide();
-                $('.ddm-api-key-wrapper').show();
+            $('#docdownman_cancel_api_key').on('click', function() {
+                $('#docdownman_email_api_key_edit').val('');
+                $('.docdownman-api-key-edit').hide();
+                $('.docdownman-api-key-wrapper').show();
             });
         }
         // Add new document file row
@@ -66,7 +66,7 @@
                 $('<td></td>').append(
                     $('<input>').attr({
                         type: 'text',
-                        name: 'ddm_document_files[' + timestamp + '][title]',
+                        name: 'docdownman_document_files[' + timestamp + '][title]',
                         class: 'regular-text',
                         required: 'required',
                         placeholder: 'Document Title'
@@ -74,7 +74,7 @@
                 ).append(
                     $('<input>').attr({
                         type: 'hidden',
-                        name: 'ddm_document_files[' + timestamp + '][id]',
+                        name: 'docdownman_document_files[' + timestamp + '][id]',
                         value: 'document-' + timestamp
                     })
                 )
@@ -85,7 +85,7 @@
                 $('<td></td>').append(
                     $('<input>').attr({
                         type: 'url',
-                        name: 'ddm_document_files[' + timestamp + '][url]',
+                        name: 'docdownman_document_files[' + timestamp + '][url]',
                         class: 'regular-text',
                         required: 'required',
                         placeholder: 'https://example.com/document.pdf'
@@ -188,12 +188,12 @@
             $button.text(originalText);
             
             // Add success message
-            if ($('.ddm-export-success').length === 0) {
-                $('<div class="notice notice-success is-dismissible ddm-export-success"><p>CSV file exported successfully!</p></div>').insertBefore('.ddm-export-container');
+            if ($('.docdownman-export-success').length === 0) {
+                $('<div class="notice notice-success is-dismissible docdownman-export-success"><p>CSV file exported successfully!</p></div>').insertBefore('.docdownman-export-container');
                 
                 // Auto-remove the message after 3 seconds
                 setTimeout(function() {
-                    $('.ddm-export-success').fadeOut(function() {
+                    $('.docdownman-export-success').fadeOut(function() {
                         $(this).remove();
                     });
                 }, 3000);

@@ -36,16 +36,16 @@ Document Download Manager is a powerful yet simple plugin that helps you manage 
 
 ### Shortcode Usage
 
-Use the shortcode `[ddmanager_document_download]` to display a download button for your documents.
+Use the shortcode `[docdownman_document_download]` to display a download button for your documents.
 
 **Basic Usage:**
-`[ddmanager_document_download id="document-1"]`
+`[docdownman_document_download id="document-1"]`
 
-**Note:** The older shortcodes `[document_download]` and `[excel_download]` are still supported for backward compatibility, but we recommend using the new shortcode for future implementations.
+**Note:** The older shortcode `[ddm_document_download]` is still supported for backward compatibility, but we recommend using the new shortcode for future implementations.
 
 You can also customize the button text:
 
-`[ddmanager_document_download id="your-document-id" text="Get Your Free Copy"]`
+`[docdownman_document_download id="your-document-id" text="Get Your Free Copy"]`
 
 == Installation ==
 
@@ -81,7 +81,7 @@ Yes, the plugin includes a consent checkbox and clear information about how the 
 
 == External Services ==
 
-This plugin does not connect to any external services.
+This plugin does not connect to any external services or APIs. All functionality is self-contained within your WordPress installation. No data is sent to external servers.
 
 == Changelog ==
 

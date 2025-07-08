@@ -5,25 +5,42 @@
 class Document_Download_Manager_Public {
 
     /**
+     * Register AJAX handlers
+     */
+    public function register_ajax_handlers() {
+        // Register AJAX handlers with new prefix
+        add_action('wp_ajax_docdownman_process_download', array($this, 'process_download_ajax'));
+        add_action('wp_ajax_nopriv_docdownman_process_download', array($this, 'process_download_ajax'));
+    }
+    
+    /**
      * Enqueue public styles
      */
     public function enqueue_styles() {
-        wp_enqueue_style('ddm-public-css', DDM_PLUGIN_URL . 'assets/css/public.css', array(), DDM_VERSION);
+        wp_enqueue_style('docdownman-public-css', DOCDOWNMAN_PLUGIN_URL . 'assets/css/public.css', array(), DOCDOWNMAN_VERSION);
     }
     
     /**
      * Enqueue public scripts
      */
     public function enqueue_scripts() {
-        wp_enqueue_script('ddm-public-js', DDM_PLUGIN_URL . 'assets/js/public.js', array('jquery'), DDM_VERSION, true);
+        wp_enqueue_script('docdownman-public-js', DOCDOWNMAN_PLUGIN_URL . 'assets/js/public.js', array('jquery'), DOCDOWNMAN_VERSION, true);
         
         // Enqueue Dashicons for the download icon
         wp_enqueue_style('dashicons');
         
-        wp_localize_script('ddm-public-js', 'ddm_ajax', array(
+        wp_localize_script('docdownman-public-js', 'docdownman_ajax', array(
             'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('ddm_nonce')
+            'nonce' => wp_create_nonce('docdownman_nonce')
         ));
+    }
+    
+    /**
+     * Register shortcodes
+     */
+    public function register_shortcodes() {
+        // Register shortcodes with new prefix
+        add_shortcode('docdownman_document_download', array($this, 'download_shortcode'));
     }
     
     /**
@@ -44,7 +61,8 @@ class Document_Download_Manager_Public {
             return '<p>Error: Document file ID is required.</p>';
         }
         
-        $document_files = get_option('ddm_document_files', array());
+        // Get document files
+        $document_files = get_option('docdownman_document_files', array());
         $file_id = $atts['id'];
         $file_data = null;
         
@@ -71,63 +89,50 @@ class Document_Download_Manager_Public {
             return '<p>Error: Document file not found.</p>';
         }
         
-        // Generate a unique ID for this download button
-        $unique_id = 'ddm-download-' . $file_id;
+        // Generate a unique form ID
+        $form_id = 'docdownman-form-' . uniqid();
+        $unique_id = 'docdownman-download-' . $file_id;
         
         // Determine file type based on URL extension
         $file_extension = pathinfo($file_data['url'], PATHINFO_EXTENSION);
         $is_pdf = strtolower($file_extension) === 'pdf';
-        $file_type_class = $is_pdf ? 'ddm-pdf-button' : 'ddm-excel-button';
+        $file_type_class = $is_pdf ? 'docdownman-pdf-button' : 'docdownman-excel-button';
         
         ob_start();
-        ?>
-        <div class="ddm-download-container">
-            <button class="ddm-download-button <?php echo esc_attr($file_type_class); ?>" data-file-id="<?php echo esc_attr($file_id); ?>" data-file-title="<?php echo esc_attr($file_data['title']); ?>" data-file-url="<?php echo esc_url($file_data['url']); ?>" data-file-type="<?php echo $is_pdf ? 'pdf' : 'excel'; ?>">
-                <?php echo esc_html($atts['text']); ?>
-            </button>
-        </div>
-        
-        <div id="ddm-modal-<?php echo esc_attr($file_id); ?>" class="ddm-modal">
-            <div class="ddm-modal-content">
-                <span class="ddm-close">&times;</span>
-                <h2>Download <?php echo esc_html($file_data['title']); ?></h2>
-                <p>Please provide your information to download this file:</p>
-                
-                <form id="ddm-form-<?php echo esc_attr($file_id); ?>" class="ddm-form">
-                    <div class="ddm-form-group">
-                        <label for="ddm-name-<?php echo esc_attr($file_id); ?>">Name</label>
-                        <input type="text" id="ddm-name-<?php echo esc_attr($file_id); ?>" name="name" required>
-                    </div>
-                    
-                    <div class="ddm-form-group">
-                        <label for="ddm-email-<?php echo esc_attr($file_id); ?>">Email</label>
-                        <input type="email" id="ddm-email-<?php echo esc_attr($file_id); ?>" name="email" required>
-                    </div>
-                    
-                    <input type="hidden" name="file_id" value="<?php echo esc_attr($file_id); ?>">
-                    <input type="hidden" name="file_title" value="<?php echo esc_attr($file_data['title']); ?>">
-                    <input type="hidden" name="file_url" value="<?php echo esc_url($file_data['url']); ?>">
-                    <input type="hidden" name="action" value="ddm_process_download">
-                    <input type="hidden" name="nonce" value="<?php echo esc_attr(wp_create_nonce('ddm_nonce')); ?>">
-                    
-                    <div class="ddm-form-group">
-                        <button type="submit" class="ddm-submit-button">Download</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-        <?php
-        return ob_get_clean();
+        $output = '<div class="docdownman-download-form-container">';
+        $output .= '<button class="docdownman-download-button" data-toggle="' . esc_attr($form_id) . '">';
+        $output .= '<span class="dashicons dashicons-download"></span> ' . esc_html($atts['text']) . '</button>';
+        $output .= '<div class="docdownman-download-form" id="' . esc_attr($form_id) . '">';
+        $output .= '<form class="docdownman-form" method="post">';
+        $output .= '<div class="docdownman-form-group">';
+        $output .= '<label for="docdownman-name-' . esc_attr($form_id) . '">' . esc_html__('Name', 'document-download-manager') . '</label>';
+        $output .= '<input type="text" name="name" id="docdownman-name-' . esc_attr($form_id) . '" required>';
+        $output .= '</div>';
+        $output .= '<div class="docdownman-form-group">';
+        $output .= '<label for="docdownman-email-' . esc_attr($form_id) . '">' . esc_html__('Email', 'document-download-manager') . '</label>';
+        $output .= '<input type="email" name="email" id="docdownman-email-' . esc_attr($form_id) . '" required>';
+        $output .= '</div>';
+        $output .= '<input type="hidden" name="file_id" value="' . esc_attr($file_id) . '">';
+        $output .= '<input type="hidden" name="file_title" value="' . esc_attr($file_data['title']) . '">';
+        $output .= '<input type="hidden" name="file_url" value="' . esc_url($file_data['url']) . '">';
+        $output .= '<input type="hidden" name="action" value="docdownman_process_download">';
+        $output .= '<input type="hidden" name="nonce" value="' . esc_attr(wp_create_nonce('docdownman_nonce')) . '">';
+        $output .= '<div class="docdownman-form-group">';
+        $output .= '<button type="submit" class="docdownman-submit-button">' . esc_html__('Download Now', 'document-download-manager') . '</button>';
+        $output .= '</div>';
+        $output .= '</form>';
+        $output .= '</div>';
+        $output .= '</div>';
+        return $output;
     }
     
     /**
      * Process download AJAX request
      */
-    public function process_download() {
-        // Check nonce with proper sanitization
-        if (!isset($_POST['nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'])), 'ddm_nonce')) {
-            wp_send_json_error(esc_html__('Invalid security token.', 'document-download-manager'));
-            wp_die();
+    public function process_download_ajax() {
+        // Verify nonce
+        if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'docdownman_nonce')) {
+            wp_send_json_error('Security check failed');
         }
         
         // Check user permissions - anyone can download but we still check for bots
@@ -165,12 +170,12 @@ class Document_Download_Manager_Public {
             wp_die();
         }
         
-        // Save download record to database
+        // Record the download in the database
         global $wpdb;
-        $table_name = $wpdb->prefix . 'ddm_downloads';
+        $table_name = $wpdb->prefix . 'docdownman_downloads';
         
         // Generate a cache key for this download record
-        $cache_key = 'ddm_download_' . md5($email . $file_url . time());
+        $cache_key = 'docdownman_download_' . md5($email . $file_url . time());
         
         // Insert the record
         $result = $wpdb->insert(
@@ -187,7 +192,7 @@ class Document_Download_Manager_Public {
         // If insert was successful, invalidate the records cache
         if ($result) {
             // Clear the all records cache to ensure the admin page shows the latest data
-            wp_cache_delete('ddm_all_records', 'document-download-manager');
+            wp_cache_delete('docdownman_all_records', 'document-download-manager');
             
             // Email marketing integration is available in the Pro version
             // This is just a placeholder in the free version

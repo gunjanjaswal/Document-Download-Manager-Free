@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Document Download Manager
  * Plugin URI: https://wordpress.org/plugins/document-download-manager/
- * Description: A plugin to manage and track document downloads with email marketing integration that works exclusively with Mailchimp.
+ * Description: A plugin to manage and track document downloads. Collect user information before allowing downloads.
  * Version: 1.0.0
  * Author: Gunjan Jaswaal
  * Author URI: https://profiles.wordpress.org/gunjanjaswal/
@@ -33,17 +33,16 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('DDM_PLUGIN_DIR', plugin_dir_path(__FILE__));
-define('DDM_PLUGIN_URL', plugin_dir_url(__FILE__));
-define('DDM_VERSION', '1.0.0');
+define('DOCDOWNMAN_PLUGIN_DIR', plugin_dir_path(__FILE__));
+define('DOCDOWNMAN_PLUGIN_URL', plugin_dir_url(__FILE__));
+define('DOCDOWNMAN_VERSION', '1.0.0');
 
 // This is the WordPress.org version with no premium features
 
 // Include required files
-require_once DDM_PLUGIN_DIR . 'includes/class-document-download-manager.php';
-require_once DDM_PLUGIN_DIR . 'includes/class-document-download-manager-admin.php';
-require_once DDM_PLUGIN_DIR . 'includes/class-document-download-manager-public.php';
-require_once DDM_PLUGIN_DIR . 'includes/class-document-download-manager-premium.php';
+require_once DOCDOWNMAN_PLUGIN_DIR . 'includes/class-document-download-manager.php';
+require_once DOCDOWNMAN_PLUGIN_DIR . 'includes/class-document-download-manager-admin.php';
+require_once DOCDOWNMAN_PLUGIN_DIR . 'includes/class-document-download-manager-public.php';
 
 /**
  * Helper function to get the upgrade URL
@@ -51,11 +50,13 @@ require_once DDM_PLUGIN_DIR . 'includes/class-document-download-manager-premium.
  *
  * @return string The URL to upgrade to the premium version
  */
-if (!function_exists('ddm_get_upgrade_url')) {
-    function ddm_get_upgrade_url() {
+if (!function_exists('docdownman_get_upgrade_url')) {
+    function docdownman_get_upgrade_url() {
         return 'https://checkout.freemius.com/plugin/19168/plan/31773/';
     }
 }
+
+
 
 // Register activation, deactivation, and uninstall hooks
 register_activation_hook(__FILE__, array('Document_Download_Manager', 'activate'));

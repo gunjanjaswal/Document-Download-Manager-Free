@@ -3,14 +3,14 @@
  */
 
 /* License page styles */
-.ddm-feature-grid {
+.docdownman-feature-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 20px;
     margin: 20px 0;
 }
 
-.ddm-feature-item {
+.docdownman-feature-item {
     background: #fff;
     border: 1px solid #ddd;
     padding: 20px;
@@ -18,59 +18,59 @@
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
-.ddm-feature-item h3 {
+.docdownman-feature-item h3 {
     margin-top: 0;
     display: flex;
     align-items: center;
 }
 
-.ddm-feature-item h3 .dashicons {
+.docdownman-feature-item h3 .dashicons {
     margin-right: 10px;
     color: #0073aa;
 }
 
-.ddm-feature-item ul {
+.docdownman-feature-item ul {
     margin-left: 0;
     padding-left: 0;
 }
 
-.ddm-feature-item li {
+.docdownman-feature-item li {
     list-style: none;
     margin-bottom: 10px;
     display: flex;
     align-items: center;
 }
 
-.ddm-feature-item li .dashicons {
+.docdownman-feature-item li .dashicons {
     margin-right: 10px;
     color: #46b450;
 }
 
-.ddm-license-active {
+.docdownman-license-active {
     background-color: #f0f8f0;
     border-left: 4px solid #46b450;
     padding: 10px 15px;
     margin-bottom: 20px;
 }
 
-.ddm-license-inactive {
+.docdownman-license-inactive {
     background-color: #f8f0f0;
     border-left: 4px solid #dc3232;
     padding: 10px 15px;
     margin-bottom: 20px;
 }
 
-.ddm-license-status-active {
+.docdownman-license-status-active {
     color: #46b450;
     font-weight: bold;
 }
 
-.ddm-license-status-inactive {
+.docdownman-license-status-inactive {
     color: #dc3232;
     font-weight: bold;
 }
 
-.ddm-disclaimer {
+.docdownman-disclaimer {
     margin-top: 30px;
     padding: 15px;
     background-color: #f8f8f8;
@@ -78,11 +78,11 @@
 }
 
 /* Settings page styles */
-.ddm-settings-wrapper {
+.docdownman-settings-wrapper {
     margin: 20px 0;
 }
 
-.ddm-settings-section {
+.docdownman-settings-section {
     background: #fff;
     border: 1px solid #ddd;
     padding: 20px;
@@ -90,11 +90,11 @@
     border-radius: 5px;
 }
 
-.ddm-document-list {
+.docdownman-document-list {
     margin-top: 20px;
 }
 
-.ddm-document-item {
+.docdownman-document-item {
     background: #f9f9f9;
     border: 1px solid #ddd;
     padding: 15px;
@@ -103,7 +103,7 @@
     position: relative;
 }
 
-.ddm-document-remove {
+.docdownman-document-remove {
     position: absolute;
     top: 10px;
     right: 10px;
@@ -111,10 +111,10 @@
     cursor: pointer;
 }
 
-.ddm-add-document {
+.docdownman-add-document {
     margin-top: 20px;
 }
 
-.ddm-instructions {
+.docdownman-instructions {
     margin-top: 20px;
 }

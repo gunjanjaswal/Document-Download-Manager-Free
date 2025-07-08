@@ -6,47 +6,47 @@
 
     $(document).ready(function() {
         // Open modal when download button is clicked
-        $('.ddm-download-button').on('click', function() {
-            var fileId = $(this).data('file-id');
-            $('#ddm-modal-' + fileId).css('display', 'block');
+        $('.docdownman-download-button').on('click', function() {
+            var fileId = $(this).data('toggle');
+            $('#' + fileId).css('display', 'block');
         });
 
         // Close modal when close button is clicked
-        $('.ddm-close').on('click', function() {
-            $(this).closest('.ddm-modal').css('display', 'none');
+        $('.docdownman-close').on('click', function() {
+            $(this).closest('.docdownman-modal').css('display', 'none');
         });
 
         // Close modal when clicking outside the modal content
-        $('.ddm-modal').on('click', function(e) {
+        $('.docdownman-modal').on('click', function(e) {
             if (e.target === this) {
                 $(this).css('display', 'none');
             }
         });
 
         // Handle form submission
-        $('.ddm-form').on('submit', function(e) {
+        $('.docdownman-form').on('submit', function(e) {
             e.preventDefault();
             
             var form = $(this);
             var formData = form.serialize();
-            var modal = form.closest('.ddm-modal');
-            var modalContent = form.closest('.ddm-modal-content');
+            var modal = form.closest('.docdownman-modal');
+            var modalContent = form.closest('.docdownman-modal-content');
             
             // Remove any existing messages
-            $('.ddm-message').remove();
+            $('.docdownman-message').remove();
             
             // Add loading message
-            modalContent.append('<div class="ddm-message">Processing your request...</div>');
+            modalContent.append('<div class="docdownman-message">Processing your request...</div>');
             
             // Submit form data via AJAX
             $.ajax({
-                url: ddm_ajax.ajax_url,
+                url: docdownman_ajax.ajax_url,
                 type: 'POST',
                 data: formData,
                 success: function(response) {
                     if (response.success) {
                         // Replace form with success message
-                        form.replaceWith('<div class="ddm-message success">' + response.data.message + '</div>');
+                        form.replaceWith('<div class="docdownman-message success">' + response.data.message + '</div>');
                         
                         // Start download after a short delay
                         setTimeout(function() {
@@ -59,14 +59,14 @@
                         }, 1000);
                     } else {
                         // Show error message
-                        $('.ddm-message').remove();
-                        modalContent.append('<div class="ddm-message error">' + response.data + '</div>');
+                        $('.docdownman-message').remove();
+                        modalContent.append('<div class="docdownman-message error">' + response.data + '</div>');
                     }
                 },
                 error: function() {
                     // Show error message
-                    $('.ddm-message').remove();
-                    modalContent.append('<div class="ddm-message error">An error occurred. Please try again.</div>');
+                    $('.docdownman-message').remove();
+                    modalContent.append('<div class="docdownman-message error">An error occurred. Please try again.</div>');
                 }
             });
         });

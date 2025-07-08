@@ -30,12 +30,10 @@ class Document_Download_Manager {
         // Register public hooks
         add_action('wp_enqueue_scripts', array($this->public, 'enqueue_styles'));
         add_action('wp_enqueue_scripts', array($this->public, 'enqueue_scripts'));
-        add_action('wp_ajax_ddm_process_download', array($this->public, 'process_download'));
-        add_action('wp_ajax_nopriv_ddm_process_download', array($this->public, 'process_download'));
-        add_shortcode('ddmanager_document_download', array($this->public, 'download_shortcode'));
-        // Keep these shortcodes for backward compatibility
-        add_shortcode('document_download', array($this->public, 'download_shortcode'));
-        add_shortcode('excel_download', array($this->public, 'download_shortcode'));
+        
+        // Register AJAX handlers and shortcodes through the public class
+        $this->public->register_ajax_handlers();
+        $this->public->register_shortcodes();
     }
 
     /**
@@ -45,7 +43,7 @@ class Document_Download_Manager {
         global $wpdb;
         
         // Check if the table already exists
-        $table_name = $wpdb->prefix . 'ddm_downloads';
+        $table_name = $wpdb->prefix . 'docdownman_downloads';
         $table_exists = $wpdb->get_var("SHOW TABLES LIKE '$table_name'") === $table_name;
         
         // Only create the table if it doesn't exist
@@ -66,7 +64,7 @@ class Document_Download_Manager {
             dbDelta($sql);
             
             // Cache that we've created the table
-            wp_cache_set('ddm_table_created', true, 'document-download-manager', DAY_IN_SECONDS);
+            wp_cache_set('docdownman_table_created', true, 'document-download-manager', DAY_IN_SECONDS);
         }
     }
 
@@ -84,10 +82,10 @@ class Document_Download_Manager {
         global $wpdb;
         
         // Drop the downloads table
-        $table_name = $wpdb->prefix . 'ddm_downloads';
+        $table_name = $wpdb->prefix . 'docdownman_downloads';
         $wpdb->query("DROP TABLE IF EXISTS $table_name");
         
         // Delete plugin options
-        delete_option('ddm_document_files');
+        delete_option('docdownman_document_files');
     }
 }
