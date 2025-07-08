@@ -41,6 +41,9 @@ class Document_Download_Manager_Public {
     public function register_shortcodes() {
         // Register shortcodes with new prefix
         add_shortcode('docdownman_document_download', array($this, 'download_shortcode'));
+        
+        // Add backward compatibility for the old shortcode name
+        add_shortcode('document_download', array($this, 'download_shortcode'));
     }
     
     /**

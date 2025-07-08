@@ -43,6 +43,7 @@ define('DOCDOWNMAN_VERSION', '1.0.0');
 require_once DOCDOWNMAN_PLUGIN_DIR . 'includes/class-document-download-manager.php';
 require_once DOCDOWNMAN_PLUGIN_DIR . 'includes/class-document-download-manager-admin.php';
 require_once DOCDOWNMAN_PLUGIN_DIR . 'includes/class-document-download-manager-public.php';
+require_once DOCDOWNMAN_PLUGIN_DIR . 'includes/class-document-download-manager-premium.php';
 
 /**
  * Helper function to get the upgrade URL
@@ -58,10 +59,10 @@ if (!function_exists('docdownman_get_upgrade_url')) {
 
 
 
-// Register activation, deactivation, and uninstall hooks
+// Register activation and deactivation hooks
 register_activation_hook(__FILE__, array('Document_Download_Manager', 'activate'));
 register_deactivation_hook(__FILE__, array('Document_Download_Manager', 'deactivate'));
-register_uninstall_hook(__FILE__, array('Document_Download_Manager', 'uninstall'));
+// Note: Uninstall is handled by uninstall.php
 
 // Initialize the plugin
 function document_download_manager_initialize() {

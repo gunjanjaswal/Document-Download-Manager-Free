@@ -23,13 +23,7 @@ function docdownman_is_premium() {
 
 
 
-/**
- * Get upgrade URL
- * Returns the URL to the premium version checkout page
- */
-function docdownman_get_upgrade_url() {
-    return 'https://checkout.freemius.com/plugin/19168/plan/31773/';
-}
+// The upgrade URL function is defined in the main plugin file
 
 
 

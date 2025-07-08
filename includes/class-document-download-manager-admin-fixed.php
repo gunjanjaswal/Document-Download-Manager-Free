@@ -367,84 +367,31 @@ class Document_Download_Manager_Admin {
             return;
         }
         
-        // Get download records from database
-        global $wpdb;
-        $table_name = $wpdb->prefix . 'docdownman_downloads';
-        
-        // Check if table exists
-        $table_exists = $wpdb->get_var("SHOW TABLES LIKE '$table_name'") === $table_name;
-        
-        if (!$table_exists) {
-            // Table doesn't exist, show error
-            ?>
-            <div class="wrap">
-                <h1><?php echo esc_html__('Download Records', 'document-download-manager'); ?></h1>
-                <div class="notice notice-error">
-                    <p><?php echo esc_html__('The downloads database table does not exist. Please deactivate and reactivate the plugin to create it.', 'document-download-manager'); ?></p>
-                </div>
-            </div>
-            <?php
-            return;
-        }
-        
-        // Get records from cache or database
-        $records = wp_cache_get('docdownman_all_records', 'document-download-manager');
-        
-        if (false === $records) {
-            // Cache miss, get from database
-            $records = $wpdb->get_results(
-                "SELECT * FROM $table_name ORDER BY time DESC LIMIT 1000",
-                ARRAY_A
-            );
-            
-            // Cache the results for 5 minutes
-            wp_cache_set('docdownman_all_records', $records, 'document-download-manager', 5 * MINUTE_IN_SECONDS);
-        }
-        
         ?>
         <div class="wrap">
             <h1><?php echo esc_html__('Download Records', 'document-download-manager'); ?></h1>
             
-            <?php if (empty($records)) : ?>
-                <div class="notice notice-info">
-                    <p><?php echo esc_html__('No download records found yet.', 'document-download-manager'); ?></p>
-                </div>
-            <?php else : ?>
-                <div class="notice notice-info is-dismissible">
-                    <p><?php echo esc_html__('These are the records of users who have downloaded your documents.', 'document-download-manager'); ?></p>
-                </div>
-                
-                <div class="docdownman-premium-notice">
-                    <h3><?php echo esc_html__('Need More Features?', 'document-download-manager'); ?></h3>
-                    <p><?php echo esc_html__('Upgrade to Pro for email marketing integration with Mailchimp, advanced filtering, CSV export, and more!', 'document-download-manager'); ?></p>
-                    <p>
-                        <a href="https://checkout.freemius.com/plugin/19168/plan/31773/" class="button button-primary">
-                            <?php echo esc_html__('Get Pro Version', 'document-download-manager'); ?>
-                        </a>
-                    </p>
-                </div>
-                
-                <table class="wp-list-table widefat fixed striped">
-                    <thead>
-                        <tr>
-                            <th><?php echo esc_html__('Date & Time', 'document-download-manager'); ?></th>
-                            <th><?php echo esc_html__('Name', 'document-download-manager'); ?></th>
-                            <th><?php echo esc_html__('Email', 'document-download-manager'); ?></th>
-                            <th><?php echo esc_html__('Document', 'document-download-manager'); ?></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($records as $record) : ?>
-                            <tr>
-                                <td><?php echo esc_html(get_date_from_gmt($record['time'], get_option('date_format') . ' ' . get_option('time_format'))); ?></td>
-                                <td><?php echo esc_html($record['name']); ?></td>
-                                <td><?php echo esc_html($record['email']); ?></td>
-                                <td><?php echo esc_html($record['file_name']); ?></td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            <?php endif; ?>
+            <div class="docdownman-premium-notice">
+                <h2><?php echo esc_html__('Download Records', 'document-download-manager'); ?></h2>
+                <p><?php echo esc_html__('Download records tracking is available in the Pro version of this plugin.', 'document-download-manager'); ?></p>
+                <p><?php echo esc_html__('The Pro version allows you to track who downloaded your documents and when.', 'document-download-manager'); ?></p>
+                <p>
+                    <a href="https://checkout.freemius.com/plugin/19168/plan/31773/" class="button button-primary">
+                        <?php echo esc_html__('Get Pro Version', 'document-download-manager'); ?>
+                    </a>
+                </p>
+            </div>
+            
+            <div class="docdownman-feature-list">
+                <h3><?php echo esc_html__('Pro Version Features', 'document-download-manager'); ?></h3>
+                <ul>
+                    <li><?php echo esc_html__('Track all document downloads', 'document-download-manager'); ?></li>
+                    <li><?php echo esc_html__('View user information for each download', 'document-download-manager'); ?></li>
+                    <li><?php echo esc_html__('Export download records to CSV', 'document-download-manager'); ?></li>
+                    <li><?php echo esc_html__('Filter records by date range', 'document-download-manager'); ?></li>
+                    <li><?php echo esc_html__('Search records by user or document', 'document-download-manager'); ?></li>
+                </ul>
+            </div>
         </div>
         <?php
     }

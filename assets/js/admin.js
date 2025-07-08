@@ -57,7 +57,7 @@
             });
         }
         // Add new document file row
-        $('#add-document-file').on('click', function() {
+        $('.docdownman-add-document-file').on('click', function() {
             var timestamp = new Date().getTime();
             var newRow = $('<tr></tr>');
             
