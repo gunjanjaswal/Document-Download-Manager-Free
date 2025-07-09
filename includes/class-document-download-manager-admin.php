@@ -18,10 +18,29 @@ class Document_Download_Manager_Admin {
     public function enqueue_admin_styles($hook) {
         // Only load on our plugin pages
         if (strpos($hook, 'document-download') !== false) {
-            wp_enqueue_style('docdownman-admin-styles', plugin_dir_url(dirname(__FILE__)) . 'assets/css/admin.css', array(), DOCDOWNMAN_VERSION);
+            // Use new prefix for style handle
+            wp_enqueue_style('ddmanager-admin-styles', plugin_dir_url(dirname(__FILE__)) . 'assets/css/admin.css', array(), DDMANAGER_VERSION);
             
-            // Add premium notice styles
+            // Add premium notice styles with new prefix
             $premium_notice_css = "
+                /* New prefix styles */
+                .ddmanager-premium-notice {
+                    background: #fff;
+                    border-left: 4px solid #00a0d2;
+                    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+                    margin: 20px 0;
+                    padding: 15px;
+                }
+                .ddmanager-premium-notice h2 {
+                    margin-top: 0;
+                    color: #00a0d2;
+                }
+                .ddmanager-feature-list ul {
+                    list-style-type: disc;
+                    padding-left: 20px;
+                }
+                
+                /* For backward compatibility */
                 .docdownman-premium-notice {
                     background: #fff;
                     border-left: 4px solid #00a0d2;
@@ -38,7 +57,7 @@ class Document_Download_Manager_Admin {
                     padding-left: 20px;
                 }
             ";
-            wp_add_inline_style('docdownman-admin-styles', $premium_notice_css);
+            wp_add_inline_style('ddmanager-admin-styles', $premium_notice_css);
         }
     }
     
@@ -80,14 +99,26 @@ class Document_Download_Manager_Admin {
      * Register settings
      */
     public function register_settings() {
-        // Register Document Files settings
+        // Register Document Files settings with more unique prefix
+        register_setting(
+            'ddmanager_settings', 
+            'ddmanager_document_files', 
+            array($this, 'sanitize_document_files')
+        );
+        
+        // For backward compatibility, register with old prefix too
         register_setting(
             'docdownman_settings', 
             'docdownman_document_files', 
             array($this, 'sanitize_document_files')
         );
         
-        // Register Email Marketing settings
+        // Register Email Marketing settings with more unique prefix
+        register_setting('ddmanager_email_marketing_settings', 'ddmanager_email_api_key', array($this, 'sanitize_text_field'));
+        register_setting('ddmanager_email_marketing_settings', 'ddmanager_email_list_id', array($this, 'sanitize_text_field'));
+        register_setting('ddmanager_email_marketing_settings', 'ddmanager_email_enabled', array($this, 'sanitize_checkbox'));
+        
+        // For backward compatibility, register with old prefix too
         register_setting('docdownman_email_marketing_settings', 'docdownman_email_api_key', array($this, 'sanitize_text_field'));
         register_setting('docdownman_email_marketing_settings', 'docdownman_email_list_id', array($this, 'sanitize_text_field'));
         register_setting('docdownman_email_marketing_settings', 'docdownman_email_enabled', array($this, 'sanitize_checkbox'));
@@ -111,22 +142,30 @@ class Document_Download_Manager_Admin {
      * Enqueue admin styles
      */
     public function enqueue_styles() {
-        wp_enqueue_style('docdownman-admin-css', DOCDOWNMAN_PLUGIN_URL . 'assets/css/admin.css', array(), DOCDOWNMAN_VERSION);
+        wp_enqueue_style('ddmanager-admin-css', DDMANAGER_PLUGIN_URL . 'assets/css/admin.css', array(), DDMANAGER_VERSION);
+        
+        // For backward compatibility
+        wp_register_style('docdownman-admin-css', DDMANAGER_PLUGIN_URL . 'assets/css/admin.css', array(), DDMANAGER_VERSION);
     }
     
     /**
      * Enqueue admin scripts
      */
     public function enqueue_scripts() {
-        wp_enqueue_script('docdownman-admin-js', DOCDOWNMAN_PLUGIN_URL . 'assets/js/admin.js', array('jquery'), DOCDOWNMAN_VERSION, true);
+        wp_enqueue_script('ddmanager-admin-js', DDMANAGER_PLUGIN_URL . 'assets/js/admin.js', array('jquery'), DDMANAGER_VERSION, true);
+        
+        // For backward compatibility
+        wp_register_script('docdownman-admin-js', DDMANAGER_PLUGIN_URL . 'assets/js/admin.js', array('jquery'), DDMANAGER_VERSION, true);
         
         // Add inline script for API key masking
         if (isset($_GET['page']) && $_GET['page'] === 'document-download-email-marketing') {
             $api_key_script = "
                 jQuery(document).ready(function($) {
-                    // Toggle API key visibility
-                    $('#docdownman_toggle_api_key').on('click', function() {
-                        var input = $('#docdownman_email_api_key_display');
+                    // Toggle API key visibility with new prefix
+                    $('#ddmanager_toggle_api_key, #docdownman_toggle_api_key').on('click', function() {
+                        var input = $(this).hasClass('ddmanager_toggle_api_key') ? 
+                            $('#ddmanager_email_api_key_display') : 
+                            $('#docdownman_email_api_key_display');
                         var icon = $(this).find('.dashicons');
                         
                         if (input.attr('type') === 'password') {
@@ -138,26 +177,28 @@ class Document_Download_Manager_Admin {
                         }
                     });
                     
-                    // Edit API key
-                    $('#docdownman_edit_api_key').on('click', function() {
-                        $('.docdownman-api-key-wrapper').hide();
-                        $('.docdownman-api-key-edit').show();
-                        $('#docdownman_email_api_key_edit').focus();
+                    // Edit API key with new prefix
+                    $('#ddmanager_edit_api_key, #docdownman_edit_api_key').on('click', function() {
+                        $('.ddmanager-api-key-wrapper, .docdownman-api-key-wrapper').hide();
+                        $('.ddmanager-api-key-edit, .docdownman-api-key-edit').show();
+                        $('#ddmanager_email_api_key_edit, #docdownman_email_api_key_edit').focus();
                     });
                     
-                    // Cancel API key edit
-                    $('#docdownman_cancel_api_key').on('click', function() {
-                        $('.docdownman-api-key-wrapper').show();
-                        $('.docdownman-api-key-edit').hide();
-                        $('#docdownman_email_api_key_edit').val('');
+                    // Cancel API key edit with new prefix
+                    $('#ddmanager_cancel_api_key, #docdownman_cancel_api_key').on('click', function() {
+                        $('.ddmanager-api-key-edit, .docdownman-api-key-edit').hide();
+                        $('.ddmanager-api-key-wrapper, .docdownman-api-key-wrapper').show();
                     });
                     
-                    // Save API key
-                    $('#docdownman_save_api_key').on('click', function() {
-                        var newKey = $('#docdownman_email_api_key_edit').val();
+                    // Save API key with new prefix
+                    $('#ddmanager_save_api_key, #docdownman_save_api_key').on('click', function() {
+                        var newKey = $(this).attr('id') === 'ddmanager_save_api_key' ? 
+                            $('#ddmanager_email_api_key_edit').val() : 
+                            $('#docdownman_email_api_key_edit').val();
                         
                         if (newKey) {
-                            $('#docdownman_email_api_key').val(newKey);
+                            // Save to both prefixed fields for compatibility
+                            $('#ddmanager_email_api_key, #docdownman_email_api_key').val(newKey);
                             
                             // Create masked display version
                             var displayValue = '';
@@ -171,20 +212,38 @@ class Document_Download_Manager_Admin {
                                 displayValue = Array(keyLength + 1).join('*');
                             }
                             
-                            $('#docdownman_email_api_key_display').val(displayValue);
+                            // Update both prefixed display fields
+                            $('#ddmanager_email_api_key_display, #docdownman_email_api_key_display').val(displayValue);
                         }
                         
-                        $('.docdownman-api-key-wrapper').show();
-                        $('.docdownman-api-key-edit').hide();
-                        $('#docdownman_email_api_key_edit').val('');
+                        // Hide edit form, show display wrapper
+                        $('.ddmanager-api-key-edit, .docdownman-api-key-edit').hide();
+                        $('.ddmanager-api-key-wrapper, .docdownman-api-key-wrapper').show();
+                        $('#ddmanager_email_api_key_edit, #docdownman_email_api_key_edit').val('');
                     });
                 });
             ";
             
+            // Add inline script to both old and new prefixed scripts for backward compatibility
+            wp_add_inline_script('ddmanager-admin-js', $api_key_script);
             wp_add_inline_script('docdownman-admin-js', $api_key_script);
             
-            // Add inline styles for API key masking
+            // Add inline styles for API key masking with new prefix
             $api_key_styles = "
+                /* New prefix styles */
+                .ddmanager-api-key-wrapper {
+                    display: flex;
+                    align-items: center;
+                    gap: 5px;
+                }
+                
+                .ddmanager-api-key-edit {
+                    display: flex;
+                    align-items: center;
+                    gap: 5px;
+                }
+                
+                /* Backward compatibility styles */
                 .docdownman-api-key-wrapper {
                     display: flex;
                     align-items: center;
@@ -206,40 +265,57 @@ class Document_Download_Manager_Admin {
      * Display admin page
      */
     public function display_admin_page() {
-        // Get existing files
-        $document_files = get_option('docdownman_document_files', array());
+        // Get existing files with new prefix
+        $document_files = get_option('ddmanager_document_files', array());
+        
+        // If no files found with new prefix, try the old prefix for backward compatibility
+        if (empty($document_files)) {
+            $document_files = get_option('docdownman_document_files', array());
+        }
         
         // Handle form submission manually if needed
-        if (isset($_POST['submit']) && isset($_POST['docdownman_document_files'])) {
+        if (isset($_POST['submit'])) {
             // Verify nonce for security
-            check_admin_referer('docdownman_settings-options');
+            check_admin_referer('ddmanager_settings-options');
+            
+            // Check which form field is present (new or old prefix)
+            $post_field_name = isset($_POST['ddmanager_document_files']) ? 'ddmanager_document_files' : 'docdownman_document_files';
             
             // Properly unslash and sanitize the input
-            // First sanitize the raw input to ensure it's an array
-            $raw_input = isset($_POST['docdownman_document_files']) && is_array($_POST['docdownman_document_files']) 
-                ? $_POST['docdownman_document_files'] 
+            // First ensure it's an array and unslash it
+            $raw_input = isset($_POST[$post_field_name]) && is_array($_POST[$post_field_name]) 
+                ? wp_unslash($_POST[$post_field_name]) 
                 : array();
                 
-            // Then unslash the sanitized input
-            $input = wp_unslash($raw_input);
+            // Map through each item to sanitize it properly
+            $input = array_map(function($item) {
+                return is_array($item) ? array_map('sanitize_text_field', $item) : sanitize_text_field($item);
+            }, $raw_input);
             
             // Finally, run it through our comprehensive sanitization method
             $sanitized_input = $this->sanitize_document_files($input);
             
-            // Save the sanitized input to the database
+            // Save the sanitized input to the database with new prefix
+            update_option('ddmanager_document_files', $sanitized_input);
+            
+            // For backward compatibility, also update the old option
             update_option('docdownman_document_files', $sanitized_input);
             
             // Refresh the data with the newly saved values
-            $document_files = get_option('docdownman_document_files', array());
+            $document_files = get_option('ddmanager_document_files', array());
             
             // Add success message
-            add_settings_error('docdownman_settings', 'settings_updated', 'Document files saved successfully.', 'updated');
+            add_settings_error('ddmanager_settings', 'settings_updated', 'Document files saved successfully.', 'updated');
         }
         ?>
         <div class="wrap">
             <h1>Document Download Manager</h1>
             
-            <?php settings_errors('docdownman_settings'); ?>
+            <?php 
+            // Show both old and new settings errors for backward compatibility
+            settings_errors('ddmanager_settings'); 
+            settings_errors('docdownman_settings'); 
+            ?>
             
             <div class="notice notice-info is-dismissible">
                 <p><strong>Important:</strong> You can add both Excel (.xlsx, .xls, .csv) and PDF (.pdf) files. The file type will be automatically detected based on the file extension in the URL.</p>
@@ -247,7 +323,7 @@ class Document_Download_Manager_Admin {
             </div>
             
             <form method="post" action="">
-                <?php wp_nonce_field('docdownman_settings-options'); ?>
+                <?php wp_nonce_field('ddmanager_settings-options'); ?>
                 <table class="form-table">
                     <tr>
                         <th colspan="5">
@@ -272,17 +348,18 @@ class Document_Download_Manager_Admin {
                             ?>
                             <tr>
                                 <td>
-                                    <input type="text" name="docdownman_document_files[<?php echo esc_attr($key); ?>][title]" value="<?php echo esc_attr($file['title']); ?>" class="regular-text" required />
-                                    <input type="hidden" name="docdownman_document_files[<?php echo esc_attr($key); ?>][id]" value="<?php echo esc_attr(isset($file['id']) ? $file['id'] : sanitize_title($file['title'])); ?>" />
+                                    <input type="text" name="ddmanager_document_files[<?php echo esc_attr($key); ?>][title]" value="<?php echo esc_attr($file['title']); ?>" class="regular-text" required />
+                                    <input type="hidden" name="ddmanager_document_files[<?php echo esc_attr($key); ?>][id]" value="<?php echo esc_attr(isset($file['id']) ? $file['id'] : sanitize_title($file['title'])); ?>" />
                                 </td>
                                 <td>
-                                    <input type="url" name="docdownman_document_files[<?php echo esc_attr($key); ?>][url]" value="<?php echo esc_url($file['url']); ?>" class="regular-text" required />
+                                    <input type="url" name="ddmanager_document_files[<?php echo esc_attr($key); ?>][url]" value="<?php echo esc_url($file['url']); ?>" class="regular-text" required />
                                 </td>
                                 <td>
                                     <span class="dashicons <?php echo esc_attr($file_icon); ?>"></span> <?php echo esc_html($file_type); ?>
                                 </td>
                                 <td>
-                                    <code>[document_download id="<?php echo esc_attr(isset($file['id']) ? $file['id'] : sanitize_title($file['title'])); ?>"]</code>
+                                    <code>[ddmanager_document_download id="<?php echo esc_attr(isset($file['id']) ? $file['id'] : sanitize_title($file['title'])); ?>"]</code>
+                                    <br><small><em>Legacy shortcodes also supported</em></small>
                                 </td>
                                 <td>
                                     <button type="button" class="button remove-file">Remove</button>
@@ -293,25 +370,26 @@ class Document_Download_Manager_Admin {
                     <!-- Template row will be added by JavaScript -->
                 </table>
                 <p>
-                    <button type="button" class="button button-secondary docdownman-add-document-file">Add Document File</button>
+                    <button type="button" class="button button-secondary ddmanager-add-document-file">Add Document File</button>
                 </p>
-                <input type="submit" name="submit" id="submit" class="button button-primary" value="Save Changes">
+                <input type="submit" name="submit" class="button button-primary" value="Save Changes">
             </form>
             
-            <div class="docdownman-instructions">
+            <div class="ddmanager-instructions">
                 <h2>How to Use</h2>
                 <ol>
                     <li>Add Excel or PDF files using the form above</li>
                     <li>The file type will be automatically detected based on the file extension (.xlsx, .xls, .pdf, etc.)</li>
                     <li>Copy the shortcode for each file</li>
                     <li>Paste the shortcode in any post or page where you want to display the download button</li>
-                    <li>Alternatively, you can use the shortcode with a custom button text: <code>[document_download id="file-id" text="Free Download"]</code></li>
+                    <li>Alternatively, you can use the shortcode with a custom button text: <code>[ddmanager_document_download id="file-id" text="Free Download"]</code></li>
                 </ol>
                 <h3>Supported File Types</h3>
                 <ul>
                     <li><strong>Excel Files:</strong> .xlsx, .xls, .xlsm, .xlsb, .csv</li>
                     <li><strong>PDF Files:</strong> .pdf</li>
                 </ul>
+                <p><small>Note: Legacy shortcodes <code>[docdownman_document_download]</code> and <code>[document_download]</code> are also supported for backward compatibility.</small></p>
             </div>
         </div>
         <?php
@@ -330,7 +408,7 @@ class Document_Download_Manager_Admin {
         <div class="wrap">
             <h1><?php echo esc_html__('Email Marketing Integration', 'document-download-manager'); ?></h1>
             
-            <div class="docdownman-premium-notice">
+            <div class="ddmanager-premium-notice">
                 <h2><?php echo esc_html__('Email Marketing Integration', 'document-download-manager'); ?></h2>
                 <p><?php echo esc_html__('Email marketing integration is available in the Pro version of this plugin.', 'document-download-manager'); ?></p>
                 <p><?php echo esc_html__('The Pro version allows you to connect with email marketing services to grow your email list.', 'document-download-manager'); ?></p>
@@ -343,14 +421,15 @@ class Document_Download_Manager_Admin {
             
             <!-- Premium notice styling is added via enqueued CSS -->
             
-            <div class="docdownman-feature-list">
+            <div class="ddmanager-feature-list">
                 <h3><?php echo esc_html__('Pro Version Features', 'document-download-manager'); ?></h3>
                 <ul>
                     <li><?php echo esc_html__('Connect with popular email marketing services', 'document-download-manager'); ?></li>
                     <li><?php echo esc_html__('Automatically add document downloaders to your email list', 'document-download-manager'); ?></li>
                     <li><?php echo esc_html__('Track conversion rates and downloads', 'document-download-manager'); ?></li>
-                    <li><?php echo esc_html__('Advanced form customization options', 'document-download-manager'); ?></li>
-                    <li><?php echo esc_html__('Custom fields for collecting additional information', 'document-download-manager'); ?></li>
+                    <li><?php echo esc_html__('Change button color', 'document-download-manager'); ?></li>
+                    <li><?php echo esc_html__('Delete records', 'document-download-manager'); ?></li>
+                    <li><?php echo esc_html__('Export CSV', 'document-download-manager'); ?></li>
                     <li><?php echo esc_html__('Priority support', 'document-download-manager'); ?></li>
                 </ul>
             </div>
@@ -369,10 +448,18 @@ class Document_Download_Manager_Admin {
         
         // Get download records from database
         global $wpdb;
-        $table_name = $wpdb->prefix . 'docdownman_downloads';
+        $table_name = $wpdb->prefix . 'ddmanager_downloads';
+        $old_table_name = $wpdb->prefix . 'docdownman_downloads';
         
-        // Check if table exists
+        // Check if either new or old table exists
         $table_exists = $wpdb->get_var("SHOW TABLES LIKE '$table_name'") === $table_name;
+        $old_table_exists = $wpdb->get_var("SHOW TABLES LIKE '$old_table_name'") === $old_table_name;
+        
+        // Use old table if new one doesn't exist yet (for backward compatibility)
+        if (!$table_exists && $old_table_exists) {
+            $table_name = $old_table_name;
+            $table_exists = true;
+        }
         
         if (!$table_exists) {
             // Table doesn't exist, show error
@@ -388,7 +475,12 @@ class Document_Download_Manager_Admin {
         }
         
         // Get records from cache or database
-        $records = wp_cache_get('docdownman_all_records', 'document-download-manager');
+        $records = wp_cache_get('ddmanager_all_records', 'document-download-manager');
+        
+        // For backward compatibility, check old cache key if new one is empty
+        if (false === $records) {
+            $records = wp_cache_get('docdownman_all_records', 'document-download-manager');
+        }
         
         if (false === $records) {
             // Cache miss, get from database
@@ -397,7 +489,10 @@ class Document_Download_Manager_Admin {
                 ARRAY_A
             );
             
-            // Cache the results for 5 minutes
+            // Cache the results for 5 minutes using new prefix
+            wp_cache_set('ddmanager_all_records', $records, 'document-download-manager', 5 * MINUTE_IN_SECONDS);
+            
+            // Also update old cache key for backward compatibility
             wp_cache_set('docdownman_all_records', $records, 'document-download-manager', 5 * MINUTE_IN_SECONDS);
         }
         
@@ -414,7 +509,7 @@ class Document_Download_Manager_Admin {
                     <p><?php echo esc_html__('These are the records of users who have downloaded your documents.', 'document-download-manager'); ?></p>
                 </div>
                 
-                <div class="docdownman-premium-notice">
+                <div class="ddmanager-premium-notice">
                     <h3><?php echo esc_html__('Need More Features?', 'document-download-manager'); ?></h3>
                     <p><?php echo esc_html__('Upgrade to Pro for email marketing integration with Mailchimp, advanced filtering, CSV export, and more!', 'document-download-manager'); ?></p>
                     <p>

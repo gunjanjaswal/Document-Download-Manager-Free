@@ -25,6 +25,14 @@ Document Download Manager is a powerful yet simple plugin that helps you manage 
 * **GDPR Compliant** - Clear consent for data collection
 
 
+### Pro Version Features
+
+* **Email Marketing Integration** - Connect with popular email marketing services (Access at: `/wp-admin/admin.php?page=document-download-email-marketing`)
+* **Change Button Color** - Advanced form customization options to change button color
+* **Delete Records** - Ability to delete individual download records
+* **Export CSV** - Export all download records to CSV file
+* **Premium Support** - Priority support from our team
+
 
 ### How It Works
 
@@ -36,16 +44,16 @@ Document Download Manager is a powerful yet simple plugin that helps you manage 
 
 ### Shortcode Usage
 
-Use the shortcode `[docdownman_document_download]` to display a download button for your documents.
+Use the shortcode `[ddmanager_document_download]` to display a download button for your documents.
 
 **Basic Usage:**
-`[docdownman_document_download id="document-1"]`
+`[ddmanager_document_download id="document-1"]`
 
-**Note:** The older shortcode `[ddm_document_download]` is still supported for backward compatibility, but we recommend using the new shortcode for future implementations.
+**Note:** For backward compatibility, the legacy shortcodes `[docdownman_document_download]` and `[document_download]` are still supported, but we recommend using the new shortcode for future implementations.
 
 You can also customize the button text:
 
-`[docdownman_document_download id="your-document-id" text="Get Your Free Copy"]`
+`[ddmanager_document_download id="your-document-id" text="Get Your Free Copy"]`
 
 == Installation ==
 

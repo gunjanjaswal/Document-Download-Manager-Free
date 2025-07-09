@@ -20,7 +20,18 @@ A WordPress plugin to manage Excel and PDF document downloads with user informat
 
 ## Usage
 
-Use the shortcode `[document_download id="your-document-id"]` to display a download button for your document.
+Use the shortcode `[ddmanager_document_download id="your-document-id"]` to display a download button for your document.
+
+### Shortcode Parameters
+
+- `id`: The ID of your document (required)
+- `text`: Custom text for the download button (optional, default: "Download")
+
+### Legacy Shortcode Support
+
+For backward compatibility, the following legacy shortcodes are also supported:
+- `[docdownman_document_download id="your-document-id"]`
+- `[document_download id="your-document-id"]`
 
 ## Pro Version
 

@@ -9,6 +9,10 @@ class Document_Download_Manager_Public {
      */
     public function register_ajax_handlers() {
         // Register AJAX handlers with new prefix
+        add_action('wp_ajax_ddmanager_process_download', array($this, 'process_download_ajax'));
+        add_action('wp_ajax_nopriv_ddmanager_process_download', array($this, 'process_download_ajax'));
+        
+        // For backward compatibility, also register with old prefix
         add_action('wp_ajax_docdownman_process_download', array($this, 'process_download_ajax'));
         add_action('wp_ajax_nopriv_docdownman_process_download', array($this, 'process_download_ajax'));
     }
@@ -17,19 +21,28 @@ class Document_Download_Manager_Public {
      * Enqueue public styles
      */
     public function enqueue_styles() {
-        wp_enqueue_style('docdownman-public-css', DOCDOWNMAN_PLUGIN_URL . 'assets/css/public.css', array(), DOCDOWNMAN_VERSION);
+        // Use new prefix for style handle
+        wp_enqueue_style('ddmanager-public-css', DDMANAGER_PLUGIN_URL . 'assets/css/public.css', array(), DDMANAGER_VERSION);
     }
     
     /**
      * Enqueue public scripts
      */
     public function enqueue_scripts() {
-        wp_enqueue_script('docdownman-public-js', DOCDOWNMAN_PLUGIN_URL . 'assets/js/public.js', array('jquery'), DOCDOWNMAN_VERSION, true);
+        // Use new prefix for script handle
+        wp_enqueue_script('ddmanager-public-js', DDMANAGER_PLUGIN_URL . 'assets/js/public.js', array('jquery'), DDMANAGER_VERSION, true);
         
         // Enqueue Dashicons for the download icon
         wp_enqueue_style('dashicons');
         
-        wp_localize_script('docdownman-public-js', 'docdownman_ajax', array(
+        // Localize script with new prefix
+        wp_localize_script('ddmanager-public-js', 'ddmanager_ajax', array(
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('ddmanager_download_nonce')
+        ));
+        
+        // For backward compatibility, also localize with old prefix
+        wp_localize_script('ddmanager-public-js', 'docdownman_ajax', array(
             'ajax_url' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('docdownman_nonce')
         ));
@@ -39,10 +52,11 @@ class Document_Download_Manager_Public {
      * Register shortcodes
      */
     public function register_shortcodes() {
-        // Register shortcodes with new prefix
-        add_shortcode('docdownman_document_download', array($this, 'download_shortcode'));
+        // Register shortcodes with more unique prefix
+        add_shortcode('ddmanager_document_download', array($this, 'download_shortcode'));
         
-        // Add backward compatibility for the old shortcode name
+        // Add backward compatibility for the old shortcodes
+        add_shortcode('docdownman_document_download', array($this, 'download_shortcode'));
         add_shortcode('document_download', array($this, 'download_shortcode'));
     }
     
@@ -64,8 +78,14 @@ class Document_Download_Manager_Public {
             return '<p>Error: Document file ID is required.</p>';
         }
         
-        // Get document files
-        $document_files = get_option('docdownman_document_files', array());
+        // Get document files with new prefix
+        $document_files = get_option('ddmanager_document_files', array());
+        
+        // If no files found with new prefix, try the old prefix for backward compatibility
+        if (empty($document_files)) {
+            $document_files = get_option('docdownman_document_files', array());
+        }
+        
         $file_id = $atts['id'];
         $file_data = null;
         
@@ -93,37 +113,42 @@ class Document_Download_Manager_Public {
         }
         
         // Generate a unique form ID
-        $form_id = 'docdownman-form-' . uniqid();
-        $unique_id = 'docdownman-download-' . $file_id;
+        $form_id = 'ddmanager-form-' . uniqid();
+        $unique_id = 'ddmanager-download-' . $file_id;
         
         // Determine file type based on URL extension
         $file_extension = pathinfo($file_data['url'], PATHINFO_EXTENSION);
         $is_pdf = strtolower($file_extension) === 'pdf';
-        $file_type_class = $is_pdf ? 'docdownman-pdf-button' : 'docdownman-excel-button';
+        $file_type_class = $is_pdf ? 'ddmanager-pdf-button' : 'ddmanager-excel-button';
         
         ob_start();
-        $output = '<div class="docdownman-download-form-container">';
-        $output .= '<button class="docdownman-download-button" data-toggle="' . esc_attr($form_id) . '">';
+        $output = '<div class="ddmanager-download-form-container">';
+        $output .= '<button class="ddmanager-download-button ' . esc_attr($file_type_class) . '" data-toggle="' . esc_attr($form_id) . '">';
         $output .= '<span class="dashicons dashicons-download"></span> ' . esc_html($atts['text']) . '</button>';
-        $output .= '<div class="docdownman-download-form" id="' . esc_attr($form_id) . '">';
-        $output .= '<form class="docdownman-form" method="post">';
-        $output .= '<div class="docdownman-form-group">';
-        $output .= '<label for="docdownman-name-' . esc_attr($form_id) . '">' . esc_html__('Name', 'document-download-manager') . '</label>';
-        $output .= '<input type="text" name="name" id="docdownman-name-' . esc_attr($form_id) . '" required>';
+        $output .= '<div class="ddmanager-modal" id="' . esc_attr($form_id) . '">';
+        $output .= '<div class="ddmanager-modal-content">';
+        $output .= '<span class="ddmanager-close">&times;</span>';
+        $output .= '<h3>' . esc_html($file_data['title']) . '</h3>';
+        $output .= '<form class="ddmanager-form" method="post">';
+        $output .= '<div class="ddmanager-form-group">';
+        $output .= '<label for="ddmanager-name-' . esc_attr($form_id) . '">' . esc_html__('Name', 'document-download-manager') . '</label>';
+        $output .= '<input type="text" name="name" id="ddmanager-name-' . esc_attr($form_id) . '" required>';
         $output .= '</div>';
-        $output .= '<div class="docdownman-form-group">';
-        $output .= '<label for="docdownman-email-' . esc_attr($form_id) . '">' . esc_html__('Email', 'document-download-manager') . '</label>';
-        $output .= '<input type="email" name="email" id="docdownman-email-' . esc_attr($form_id) . '" required>';
+        $output .= '<div class="ddmanager-form-group">';
+        $output .= '<label for="ddmanager-email-' . esc_attr($form_id) . '">' . esc_html__('Email', 'document-download-manager') . '</label>';
+        $output .= '<input type="email" name="email" id="ddmanager-email-' . esc_attr($form_id) . '" required>';
         $output .= '</div>';
         $output .= '<input type="hidden" name="file_id" value="' . esc_attr($file_id) . '">';
         $output .= '<input type="hidden" name="file_title" value="' . esc_attr($file_data['title']) . '">';
         $output .= '<input type="hidden" name="file_url" value="' . esc_url($file_data['url']) . '">';
-        $output .= '<input type="hidden" name="action" value="docdownman_process_download">';
-        $output .= '<input type="hidden" name="nonce" value="' . esc_attr(wp_create_nonce('docdownman_nonce')) . '">';
-        $output .= '<div class="docdownman-form-group">';
-        $output .= '<button type="submit" class="docdownman-submit-button">' . esc_html__('Download Now', 'document-download-manager') . '</button>';
+        $output .= '<input type="hidden" name="action" value="ddmanager_process_download">';
+        $output .= '<input type="hidden" name="nonce" value="' . wp_create_nonce('ddmanager_download_nonce') . '">';
+        $output .= '<div class="ddmanager-form-group">';
+        $output .= '<button type="submit" class="ddmanager-submit-button">' . esc_html__('Download Now', 'document-download-manager') . '</button>';
         $output .= '</div>';
         $output .= '</form>';
+        $output .= '</div>';
+        $output .= '</div>';
         $output .= '</div>';
         $output .= '</div>';
         return $output;
@@ -133,9 +158,18 @@ class Document_Download_Manager_Public {
      * Process download AJAX request
      */
     public function process_download_ajax() {
-        // Verify nonce
-        if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'docdownman_nonce')) {
-            wp_send_json_error('Security check failed');
+        // Verify nonce with proper sanitization
+        if (!isset($_POST['nonce'])) {
+            wp_send_json_error(esc_html__('Security check failed', 'document-download-manager'));
+            wp_die();
+        }
+        
+        $nonce = sanitize_text_field(wp_unslash($_POST['nonce']));
+        
+        // Try new nonce name first, then fall back to old one for backward compatibility
+        if (!wp_verify_nonce($nonce, 'ddmanager_download_nonce') && !wp_verify_nonce($nonce, 'docdownman_nonce')) {
+            wp_send_json_error(esc_html__('Security check failed', 'document-download-manager'));
+            wp_die();
         }
         
         // Check user permissions - anyone can download but we still check for bots
@@ -175,14 +209,22 @@ class Document_Download_Manager_Public {
         
         // Record the download in the database
         global $wpdb;
-        $table_name = $wpdb->prefix . 'docdownman_downloads';
+        $table_name = $wpdb->prefix . 'ddmanager_downloads';
+        $old_table_name = $wpdb->prefix . 'docdownman_downloads';
+        
+        // Check which table exists and use the appropriate one
+        $table_exists = $wpdb->get_var("SHOW TABLES LIKE '$table_name'") === $table_name;
+        $old_table_exists = $wpdb->get_var("SHOW TABLES LIKE '$old_table_name'") === $old_table_name;
+        
+        // Use the new table if it exists, otherwise fall back to the old one
+        $active_table = $table_exists ? $table_name : ($old_table_exists ? $old_table_name : $table_name);
         
         // Generate a cache key for this download record
-        $cache_key = 'docdownman_download_' . md5($email . $file_url . time());
+        $cache_key = 'ddmanager_download_' . md5($email . $file_url . time());
         
         // Insert the record
         $result = $wpdb->insert(
-            $table_name,
+            $active_table,
             array(
                 'name' => $name,
                 'email' => $email,
@@ -194,7 +236,8 @@ class Document_Download_Manager_Public {
         
         // If insert was successful, invalidate the records cache
         if ($result) {
-            // Clear the all records cache to ensure the admin page shows the latest data
+            // Clear both new and old cache keys to ensure the admin page shows the latest data
+            wp_cache_delete('ddmanager_all_records', 'document-download-manager');
             wp_cache_delete('docdownman_all_records', 'document-download-manager');
             
             // Email marketing integration is available in the Pro version

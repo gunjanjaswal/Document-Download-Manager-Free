@@ -10,21 +10,34 @@ if (!defined('WP_UNINSTALL_PLUGIN')) {
     exit;
 }
 
-// Delete plugin options
+// Delete plugin options (both old and new prefixes for backward compatibility)
+delete_option('ddmanager_document_files');
 delete_option('docdownman_document_files');
+delete_option('document_download_files');
 
-// Clear any cached data
+// Delete any other plugin options
+delete_option('ddmanager_email_api_key');
+delete_option('docdownman_email_api_key');
+
+// Clear any cached data (both old and new prefixes for backward compatibility)
+wp_cache_delete('ddmanager_all_records', 'document-download-manager');
 wp_cache_delete('docdownman_all_records', 'document-download-manager');
+wp_cache_delete('ddmanager_table_created', 'document-download-manager');
 wp_cache_delete('docdownman_table_created', 'document-download-manager');
 
 // Use dbDelta for proper database schema changes
 global $wpdb;
-$table_name = $wpdb->prefix . 'docdownman_downloads';
 
-// Check if the table exists before attempting to drop it
-$table_exists = $wpdb->get_var("SHOW TABLES LIKE '$table_name'") === $table_name;
+// Handle new prefix table
+$new_table_name = $wpdb->prefix . 'ddmanager_downloads';
+$new_table_exists = $wpdb->get_var("SHOW TABLES LIKE '$new_table_name'") === $new_table_name;
+if ($new_table_exists) {
+    $wpdb->query("DROP TABLE IF EXISTS $new_table_name");
+}
 
-// Drop the table if it exists
-if ($table_exists) {
-    $wpdb->query("DROP TABLE IF EXISTS $table_name");
+// Handle old prefix table for backward compatibility
+$old_table_name = $wpdb->prefix . 'docdownman_downloads';
+$old_table_exists = $wpdb->get_var("SHOW TABLES LIKE '$old_table_name'") === $old_table_name;
+if ($old_table_exists) {
+    $wpdb->query("DROP TABLE IF EXISTS $old_table_name");
 }

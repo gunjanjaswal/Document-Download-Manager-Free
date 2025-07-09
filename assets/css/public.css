@@ -1,6 +1,30 @@
 /* Document Download Manager - Public Styles */
 
 /* Download Button */
+.ddmanager-download-button {
+    display: inline-block;
+    background-color: #D4AF37;
+    color: #fff;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 30px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-align: center;
+}
+
+.ddmanager-download-button:hover {
+    background-color: #C5A028;
+}
+
+.ddmanager-download-button::after {
+    font-family: 'dashicons';
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+/* For backward compatibility */
 .docdownman-download-button {
     display: inline-block;
     background-color: #D4AF37;
@@ -25,6 +49,17 @@
 }
 
 /* Excel button */
+.ddmanager-excel-button::after {
+    content: '\f019';
+}
+
+/* PDF button */
+.ddmanager-pdf-button::after {
+    content: '\f491';
+}
+
+/* For backward compatibility */
+/* Excel button */
 .docdownman-excel-button::after {
     content: '\f019';
 }
@@ -35,6 +70,19 @@
 }
 
 /* Modal Styles */
+.ddmanager-modal {
+    display: none;
+    position: fixed;
+    z-index: 999999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* For backward compatibility */
 .docdownman-modal {
     display: none;
     position: fixed;
@@ -47,6 +95,18 @@
     background-color: rgba(0, 0, 0, 0.5);
 }
 
+.ddmanager-modal-content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    max-width: 500px;
+    width: 90%;
+    position: relative;
+}
+
+/* For backward compatibility */
 .docdownman-modal-content {
     background-color: #fff;
     margin: 10% auto;
@@ -58,6 +118,21 @@
     position: relative;
 }
 
+.ddmanager-close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    color: #777;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.ddmanager-close:hover {
+    color: #333;
+}
+
+/* For backward compatibility */
 .docdownman-close {
     position: absolute;
     top: 15px;
@@ -73,6 +148,26 @@
 }
 
 /* Form Styles */
+.ddmanager-form {
+    margin-top: 20px;
+}
+
+.ddmanager-form-group {
+    margin-bottom: 15px;
+}
+
+.ddmanager-form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.ddmanager-form-group input[type="text"],
+.ddmanager-form-group input[type="email"] {
+    width: 100%;
+}
+
+/* For backward compatibility */
 .docdownman-form {
     margin-top: 20px;
 }
@@ -96,6 +191,23 @@
     font-size: 16px;
 }
 
+.ddmanager-submit-button {
+    background-color: #D4AF37;
+    color: #fff;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 30px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 100%;
+}
+
+.ddmanager-submit-button:hover {
+    background-color: #C5A028;
+}
+
+/* For backward compatibility */
 .docdownman-submit-button {
     background-color: #D4AF37;
     color: #fff;
@@ -113,6 +225,25 @@
 }
 
 /* Message Styles */
+.ddmanager-message {
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 4px;
+}
+
+.ddmanager-message.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.ddmanager-message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* For backward compatibility */
 .docdownman-message {
     padding: 15px;
     margin: 15px 0;
@@ -133,6 +264,12 @@
 
 /* Responsive Styles */
 @media screen and (max-width: 600px) {
+    .ddmanager-modal-content {
+        margin: 20% auto;
+        padding: 20px;
+    }
+    
+    /* For backward compatibility */
     .docdownman-modal-content {
         margin: 20% auto;
         padding: 20px;

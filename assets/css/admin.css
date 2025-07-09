@@ -1,5 +1,42 @@
 /* Document Download Manager - Admin Styles */
 
+.ddmanager-instructions {
+    margin-top: 30px;
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 5px;
+    border-left: 4px solid #D4AF37;
+}
+
+.ddmanager-instructions h2 {
+    margin-top: 0;
+}
+
+.ddmanager-instructions ol {
+    margin-left: 20px;
+}
+
+/* Premium notice */
+.ddmanager-premium-notice {
+    background-color: #f0f6fc;
+    border: 1px solid #c3c4c7;
+    border-left: 4px solid #2271b1;
+    padding: 15px;
+    margin: 20px 0;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.ddmanager-premium-notice h2,
+.ddmanager-premium-notice h3 {
+    margin-top: 0;
+    color: #2271b1;
+}
+
+.ddmanager-feature-list {
+    margin-top: 20px;
+}
+
+/* For backward compatibility */
 .docdownman-instructions {
     margin-top: 30px;
     background-color: #f8f9fa;
@@ -14,6 +51,25 @@
 
 .docdownman-instructions ol {
     margin-left: 20px;
+}
+
+.docdownman-premium-notice {
+    background-color: #f0f6fc;
+    border: 1px solid #c3c4c7;
+    border-left: 4px solid #2271b1;
+    padding: 15px;
+    margin: 20px 0;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.docdownman-premium-notice h2,
+.docdownman-premium-notice h3 {
+    margin-top: 0;
+    color: #2271b1;
+}
+
+.docdownman-feature-list {
+    margin-top: 20px;
 }
 
 /* Form table styles */
