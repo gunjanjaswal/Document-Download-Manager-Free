@@ -6,42 +6,42 @@
 
     $(document).ready(function() {
         // Open modal when download button is clicked
-        $('.ddmanager-download-button, .docdownman-download-button').on('click', function() {
+        $('.docdownman-download-button').on('click', function() {
             var fileId = $(this).data('toggle');
             $('#' + fileId).css('display', 'block');
         });
 
         // Close modal when close button is clicked
-        $('.ddmanager-close, .docdownman-close').on('click', function() {
-            $(this).closest('.ddmanager-modal, .docdownman-modal').css('display', 'none');
+        $('.docdownman-close').on('click', function() {
+            $(this).closest('.docdownman-modal').css('display', 'none');
         });
 
         // Close modal when clicking outside the modal content
-        $('.ddmanager-modal, .docdownman-modal').on('click', function(e) {
+        $('.docdownman-modal').on('click', function(e) {
             if (e.target === this) {
                 $(this).css('display', 'none');
             }
         });
 
         // Handle form submission
-        $('.ddmanager-form, .docdownman-form').on('submit', function(e) {
+        $('.docdownman-form').on('submit', function(e) {
             e.preventDefault();
             
             var form = $(this);
             var formData = form.serialize();
-            var modal = form.closest('.ddmanager-modal, .docdownman-modal');
-            var modalContent = form.closest('.ddmanager-modal-content, .docdownman-modal-content');
+            var modal = form.closest('.docdownman-modal');
+            var modalContent = form.closest('.docdownman-modal-content');
             
             // Remove any existing messages
-            $('.ddmanager-message, .docdownman-message').remove();
+            $('.docdownman-message').remove();
             
             // Add loading message
-            var messageClass = form.hasClass('ddmanager-form') ? 'ddmanager-message' : 'docdownman-message';
+            var messageClass = 'docdownman-message';
             modalContent.append('<div class="' + messageClass + '">Processing your request...</div>');
             
             // Submit form data via AJAX
             $.ajax({
-                url: (typeof ddmanager_ajax !== 'undefined' ? ddmanager_ajax.ajax_url : docdownman_ajax.ajax_url),
+                url: docdownman_ajax.ajax_url,
                 type: 'POST',
                 data: formData,
                 success: function(response) {
@@ -60,13 +60,13 @@
                         }, 1000);
                     } else {
                         // Show error message
-                        $('.ddmanager-message, .docdownman-message').remove();
+                        $('.docdownman-message').remove();
                         modalContent.append('<div class="' + messageClass + ' error">' + response.data + '</div>');
                     }
                 },
                 error: function() {
                     // Show error message
-                    $('.ddmanager-message, .docdownman-message').remove();
+                    $('.docdownman-message').remove();
                     modalContent.append('<div class="' + messageClass + ' error">An error occurred. Please try again.</div>');
                 }
             });

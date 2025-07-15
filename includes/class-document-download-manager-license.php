@@ -19,7 +19,7 @@ class Document_Download_Manager_License {
     public function enqueue_admin_styles($hook) {
         // Only load on our plugin pages
         if (strpos($hook, 'document-download-license') !== false) {
-            wp_enqueue_style('ddm-admin-styles', plugin_dir_url(dirname(__FILE__)) . 'assets/css/admin-styles.css', array(), DDM_VERSION);
+            wp_enqueue_style('docdownman-admin-styles', plugin_dir_url(dirname(__FILE__)) . 'assets/css/admin-styles.css', array(), DOCDOWNMAN_VERSION);
         }
     }
     
@@ -41,8 +41,8 @@ class Document_Download_Manager_License {
      * Register license settings
      */
     public function register_license_settings() {
-        register_setting('ddm_license_settings', 'ddm_license_key', array($this, 'sanitize_license'));
-        register_setting('ddm_license_settings', 'ddm_license_status', array($this, 'sanitize_license_status'));
+        register_setting('docdownman_license_settings', 'docdownman_license_key', array($this, 'sanitize_license'));
+        register_setting('docdownman_license_settings', 'docdownman_license_status', array($this, 'sanitize_license_status'));
     }
     
     /**
@@ -64,11 +64,11 @@ class Document_Download_Manager_License {
      * Sanitize license key
      */
     public function sanitize_license($new) {
-        $old = get_option('ddm_license_key');
+        $old = get_option('docdownman_license_key');
         
         if ($old && $old != $new) {
             // When changing license, deactivate the old one
-            delete_option('ddm_license_status');
+            delete_option('docdownman_license_status');
         }
         
         return sanitize_text_field($new);
@@ -79,38 +79,38 @@ class Document_Download_Manager_License {
      */
     public function process_license_actions() {
         // Check if we're activating a license
-        if (isset($_POST['ddm_license_activate']) && isset($_POST['ddm_license_key']) && isset($_POST['ddm_license_nonce'])) {
+        if (isset($_POST['docdownman_license_activate']) && isset($_POST['docdownman_license_key']) && isset($_POST['docdownman_license_nonce'])) {
             // Verify nonce
-            if (!wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['ddm_license_nonce'])), 'ddm_license_nonce')) {
-                add_settings_error('ddm_license_key', 'invalid_nonce', __('Security verification failed. Please try again.', 'document-download-manager'));
+            if (!wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['docdownman_license_nonce'])), 'docdownman_license_nonce')) {
+                add_settings_error('docdownman_license_key', 'invalid_nonce', __('Security verification failed. Please try again.', 'document-download-manager'));
                 return;
             }
             
             // Check user permissions
             if (!current_user_can('manage_options')) {
-                add_settings_error('ddm_license_key', 'invalid_permissions', __('You do not have permission to perform this action.', 'document-download-manager'));
+                add_settings_error('docdownman_license_key', 'invalid_permissions', __('You do not have permission to perform this action.', 'document-download-manager'));
                 return;
             }
             
-            $license_key = sanitize_text_field(wp_unslash($_POST['ddm_license_key']));
+            $license_key = sanitize_text_field(wp_unslash($_POST['docdownman_license_key']));
             $this->activate_license($license_key);
         }
         
         // Check if we're deactivating a license
-        if (isset($_POST['ddm_license_deactivate']) && isset($_POST['ddm_license_nonce'])) {
+        if (isset($_POST['docdownman_license_deactivate']) && isset($_POST['docdownman_license_nonce'])) {
             // Verify nonce
-            if (!wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['ddm_license_nonce'])), 'ddm_license_nonce')) {
-                add_settings_error('ddm_license_key', 'invalid_nonce', __('Security verification failed. Please try again.', 'document-download-manager'));
+            if (!wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['docdownman_license_nonce'])), 'docdownman_license_nonce')) {
+                add_settings_error('docdownman_license_key', 'invalid_nonce', __('Security verification failed. Please try again.', 'document-download-manager'));
                 return;
             }
             
             // Check user permissions
             if (!current_user_can('manage_options')) {
-                add_settings_error('ddm_license_key', 'invalid_permissions', __('You do not have permission to perform this action.', 'document-download-manager'));
+                add_settings_error('docdownman_license_key', 'invalid_permissions', __('You do not have permission to perform this action.', 'document-download-manager'));
                 return;
             }
             
-            $license_key = get_option('ddm_license_key', '');
+            $license_key = get_option('docdownman_license_key', '');
             $this->deactivate_license($license_key);
         }
     }
@@ -121,7 +121,7 @@ class Document_Download_Manager_License {
     private function activate_license($license_key) {
         // Validate license key format (basic check)
         if (empty($license_key) || strlen($license_key) < 8) {
-            add_settings_error('ddm_license_key', 'invalid_key', __('Please enter a valid license key.', 'document-download-manager'));
+            add_settings_error('docdownman_license_key', 'invalid_key', __('Please enter a valid license key.', 'document-download-manager'));
             return false;
         }
         
@@ -136,7 +136,7 @@ class Document_Download_Manager_License {
             'site_url' => $site_url,
             'site_name' => $site_name,
             'product_id' => 'document-download-manager',
-            'version' => DDM_VERSION
+            'version' => DOCDOWNMAN_VERSION
         );
         
         // Make the API request
@@ -147,7 +147,7 @@ class Document_Download_Manager_License {
         
         // Check for API errors
         if (is_wp_error($response)) {
-            add_settings_error('ddm_license_key', 'api_error', __('Error connecting to the license server. Please try again later.', 'document-download-manager'));
+            add_settings_error('docdownman_license_key', 'api_error', __('Error connecting to the license server. Please try again later.', 'document-download-manager'));
             return false;
         }
         
@@ -166,18 +166,18 @@ class Document_Download_Manager_License {
         
         if ($license_data->success === true && $license_data->license === 'valid') {
             // Save license information
-            update_option('ddm_license_key', $license_key);
-            update_option('ddm_license_status', 'valid');
-            update_option('ddm_license_expiry', strtotime($license_data->expires));
-            update_option('ddm_customer_name', $license_data->customer_name);
-            update_option('ddm_customer_email', $license_data->customer_email);
+            update_option('docdownman_license_key', $license_key);
+            update_option('docdownman_license_status', 'valid');
+            update_option('docdownman_license_expiry', strtotime($license_data->expires));
+            update_option('docdownman_customer_name', $license_data->customer_name);
+            update_option('docdownman_customer_email', $license_data->customer_email);
             
-            add_settings_error('ddm_license_key', 'license_activated', __('License activated successfully!', 'document-download-manager'), 'success');
+            add_settings_error('docdownman_license_key', 'license_activated', __('License activated successfully!', 'document-download-manager'), 'success');
             return true;
         } else {
             // Handle license activation failure
             $error_message = isset($license_data->message) ? $license_data->message : __('License activation failed. Please check your license key.', 'document-download-manager');
-            add_settings_error('ddm_license_key', 'activation_failed', $error_message);
+            add_settings_error('docdownman_license_key', 'activation_failed', $error_message);
             return false;
         }
     }
@@ -211,12 +211,12 @@ class Document_Download_Manager_License {
         // In production, you would check the actual API response
         
         // Clear license information
-        delete_option('ddm_license_status');
-        delete_option('ddm_license_expiry');
-        delete_option('ddm_customer_name');
-        delete_option('ddm_customer_email');
+        delete_option('docdownman_license_status');
+        delete_option('docdownman_license_expiry');
+        delete_option('docdownman_customer_name');
+        delete_option('docdownman_customer_email');
         
-        add_settings_error('ddm_license_key', 'license_deactivated', __('License deactivated successfully.', 'document-download-manager'), 'success');
+        add_settings_error('docdownman_license_key', 'license_deactivated', __('License deactivated successfully.', 'document-download-manager'), 'success');
         return true;
     }
     
@@ -228,19 +228,19 @@ class Document_Download_Manager_License {
         $this->process_license_actions();
         
         // Get license information
-        $license = get_option('ddm_license_key', '');
-        $status = get_option('ddm_license_status', '');
-        $expiry = get_option('ddm_license_expiry', 0);
-        $customer_name = get_option('ddm_customer_name', '');
-        $customer_email = get_option('ddm_customer_email', '');
+        $license = get_option('docdownman_license_key', '');
+        $status = get_option('docdownman_license_status', '');
+        $expiry = get_option('docdownman_license_expiry', 0);
+        $customer_name = get_option('docdownman_customer_name', '');
+        $customer_email = get_option('docdownman_customer_email', '');
         ?>
         <div class="wrap">
             <h1><?php esc_html_e('Document Download Manager License', 'document-download-manager'); ?></h1>
             
-            <?php settings_errors('ddm_license_key'); ?>
+            <?php settings_errors('docdownman_license_key'); ?>
             
             <?php if ($status == 'valid') : ?>
-                <div class="ddm-license-active">
+                <div class="docdownman-license-active">
                     <h2><span class="dashicons dashicons-yes-alt"></span> <?php esc_html_e('License Active', 'document-download-manager'); ?></h2>
                     <table class="form-table">
                         <tr>
@@ -265,7 +265,7 @@ class Document_Download_Manager_License {
                         <tr>
                             <th scope="row"><?php esc_html_e('Premium Features', 'document-download-manager'); ?></th>
                             <td>
-                                <ul class="ddm-features-list">
+                                <ul class="docdownman-features-list">
                                     <li><span class="dashicons dashicons-yes"></span> <?php esc_html_e('Email Marketing Integration', 'document-download-manager'); ?></li>
                                     <li><span class="dashicons dashicons-yes"></span> <?php esc_html_e('Document Tagging', 'document-download-manager'); ?></li>
                                     <li><span class="dashicons dashicons-yes"></span> <?php esc_html_e('Priority Support', 'document-download-manager'); ?></li>
@@ -275,47 +275,47 @@ class Document_Download_Manager_License {
                     </table>
                     
                     <form method="post" action="">
-                        <?php wp_nonce_field('ddm_license_nonce', 'ddm_license_nonce'); ?>
+                        <?php wp_nonce_field('docdownman_license_nonce', 'docdownman_license_nonce'); ?>
                         <p>
-                            <input type="submit" name="ddm_license_deactivate" class="button" value="<?php esc_html_e('Deactivate License', 'document-download-manager'); ?>" />
+                            <input type="submit" name="docdownman_license_deactivate" class="button" value="<?php esc_html_e('Deactivate License', 'document-download-manager'); ?>" />
                         </p>
                     </form>
                 </div>
             <?php else : ?>
-                <div class="ddm-license-inactive">
-                    <div class="ddm-license-cols">
-                        <div class="ddm-license-col">
+                <div class="docdownman-license-inactive">
+                    <div class="docdownman-license-cols">
+                        <div class="docdownman-license-col">
                             <h2><?php esc_html_e('Activate Your License', 'document-download-manager'); ?></h2>
                             <p><?php esc_html_e('If you already purchased a license, enter your license key below to activate premium features.', 'document-download-manager'); ?></p>
                             
                             <form method="post" action="">
-                                <?php wp_nonce_field('ddm_license_nonce', 'ddm_license_nonce'); ?>
+                                <?php wp_nonce_field('docdownman_license_nonce', 'docdownman_license_nonce'); ?>
                                 
                                 <table class="form-table">
                                     <tr>
                                         <th scope="row"><?php esc_html_e('License Key', 'document-download-manager'); ?></th>
                                         <td>
-                                            <input type="text" id="ddm_license_key" name="ddm_license_key" class="regular-text" value="<?php echo esc_attr($license); ?>" />
+                                            <input type="text" id="docdownman_license_key" name="docdownman_license_key" class="regular-text" value="<?php echo esc_attr($license); ?>" />
                                             <p class="description"><?php esc_html_e('Enter your license key to activate premium features.', 'document-download-manager'); ?></p>
                                         </td>
                                     </tr>
                                 </table>
                                 
                                 <p>
-                                    <input type="submit" name="ddm_license_activate" class="button button-primary" value="<?php esc_html_e('Activate License', 'document-download-manager'); ?>" />
+                                    <input type="submit" name="docdownman_license_activate" class="button button-primary" value="<?php esc_html_e('Activate License', 'document-download-manager'); ?>" />
                                 </p>
                             </form>
                         </div>
                         
-                        <div class="ddm-license-col">
+                        <div class="docdownman-license-col">
                             <h2><?php esc_html_e('Purchase a License', 'document-download-manager'); ?></h2>
-                            <div class="ddm-pricing-box">
+                            <div class="docdownman-pricing-box">
                                 <h3><?php esc_html_e('Premium License', 'document-download-manager'); ?></h3>
-                                <div class="ddm-price">
-                                    <span class="ddm-amount">$29</span>
-                                    <span class="ddm-period">/year</span>
+                                <div class="docdownman-price">
+                                    <span class="docdownman-amount">$29</span>
+                                    <span class="docdownman-period">/year</span>
                                 </div>
-                                <ul class="ddm-features-list">
+                                <ul class="docdownman-features-list">
                                     <li><span class="dashicons dashicons-yes"></span> <?php esc_html_e('Email Marketing Integration', 'document-download-manager'); ?></li>
                                     <li><span class="dashicons dashicons-yes"></span> <?php esc_html_e('Document Tagging', 'document-download-manager'); ?></li>
                                     <li><span class="dashicons dashicons-yes"></span> <?php esc_html_e('Priority Support', 'document-download-manager'); ?></li>
@@ -330,10 +330,10 @@ class Document_Download_Manager_License {
                 </div>
             <?php endif; ?>
             
-            <div class="ddm-premium-features">
+            <div class="docdownman-premium-features">
                 <h2><?php esc_html_e('Premium Features', 'document-download-manager'); ?></h2>
-                <div class="ddm-feature-grid">
-                    <div class="ddm-feature-item">
+                <div class="docdownman-feature-grid">
+                    <div class="docdownman-feature-item">
                         <h3><span class="dashicons dashicons-email-alt"></span> <?php esc_html_e('Email Marketing Integration', 'document-download-manager'); ?></h3>
                         <p><?php esc_html_e('Automatically add users to your email marketing list when they download documents. Works exclusively with Mailchimp.', 'document-download-manager'); ?></p>
                         <ul>
@@ -343,18 +343,18 @@ class Document_Download_Manager_License {
                         </ul>
                     </div>
                     
-                    <div class="ddm-feature-item">
+                    <div class="docdownman-feature-item">
                         <h3><span class="dashicons dashicons-chart-area"></span> <?php esc_html_e('Advanced Analytics', 'document-download-manager'); ?></h3>
                         <p><?php esc_html_e('Coming soon! Get detailed download statistics and user insights.', 'document-download-manager'); ?></p>
                     </div>
                     
-                    <div class="ddm-feature-item">
+                    <div class="docdownman-feature-item">
                         <h3><span class="dashicons dashicons-admin-customizer"></span> <?php esc_html_e('Custom Form Fields', 'document-download-manager'); ?></h3>
                         <p><?php esc_html_e('Coming soon! Create custom form fields to collect additional user information.', 'document-download-manager'); ?></p>
                     </div>
                 </div>
                 
-                <div class="ddm-premium-cta">
+                <div class="docdownman-premium-cta">
                     <h3><?php esc_html_e('Get Document Download Manager Premium', 'document-download-manager'); ?></h3>
                     <p><?php esc_html_e('Unlock all premium features and get priority support.', 'document-download-manager'); ?></p>
                     <a href="https://gunjanjaswal.me/plugins/document-download-manager-premium" class="button button-primary button-hero" target="_blank">
@@ -370,8 +370,8 @@ class Document_Download_Manager_License {
      * Check if license is valid
      */
     public static function is_valid() {
-        $status = get_option('ddm_license_status', '');
-        $expiry = get_option('ddm_license_expiry', 0);
+        $status = get_option('docdownman_license_status', '');
+        $expiry = get_option('docdownman_license_expiry', 0);
         
         // Check if license is valid and not expired
         if ($status === 'valid' && $expiry > time()) {
@@ -380,7 +380,7 @@ class Document_Download_Manager_License {
         
         // If license has expired, update status
         if ($status === 'valid' && $expiry <= time()) {
-            update_option('ddm_license_status', 'expired');
+            update_option('docdownman_license_status', 'expired');
             return false;
         }
         

@@ -20,23 +20,19 @@ A WordPress plugin to manage Excel and PDF document downloads with user informat
 
 ## Usage
 
-Use the shortcode `[ddmanager_document_download id="your-document-id"]` to display a download button for your document.
+Use the shortcode `[docdownman_document_download id="your-document-id"]` to display a download button for your document.
 
 ### Shortcode Parameters
 
 - `id`: The ID of your document (required)
 - `text`: Custom text for the download button (optional, default: "Download")
 
-### Legacy Shortcode Support
 
-For backward compatibility, the following legacy shortcodes are also supported:
-- `[docdownman_document_download id="your-document-id"]`
-- `[document_download id="your-document-id"]`
 
 ## Pro Version
 
 The Pro version includes email marketing integration that works with Mailchimp, allowing you to:
-- Automatically add document downloaders to your Mailchimp email list. Access via admin menu or directly at `/wp-admin/admin.php?page=document-download-email-marketing`
+- Automatically add document downloaders to your Mailchimp email list. Access via admin menu or directly at `/wp-admin/admin.php?page=docdownman-email-marketing`
 - Segment subscribers based on which documents they download
 - Sync existing download records to your email platform with one click
 

@@ -5,11 +5,11 @@
     'use strict';
 
     $(document).ready(function() {
-        // Email Marketing API Key functionality - support both old and new prefixes
-        if ($('#ddmanager_toggle_api_key, #docdownman_toggle_api_key').length) {
+        // Email Marketing API Key functionality
+        if ($('#docdownman_toggle_api_key').length) {
             // Toggle API key visibility
-            $('#ddmanager_toggle_api_key, #docdownman_toggle_api_key').on('click', function() {
-                var $display = $('#ddmanager_email_api_key_display, #docdownman_email_api_key_display');
+            $('#docdownman_toggle_api_key').on('click', function() {
+                var $display = $('#docdownman_email_api_key_display');
                 if ($display.attr('type') === 'password') {
                     $display.attr('type', 'text');
                     $(this).find('.dashicons').removeClass('dashicons-visibility').addClass('dashicons-hidden');
@@ -20,18 +20,18 @@
             });
 
             // Edit API key
-            $('#ddmanager_edit_api_key, #docdownman_edit_api_key').on('click', function() {
-                $('.ddmanager-api-key-wrapper, .docdownman-api-key-wrapper').hide();
-                $('.ddmanager-api-key-edit, .docdownman-api-key-edit').show();
-                $('#ddmanager_email_api_key_edit, #docdownman_email_api_key_edit').focus();
+            $('#docdownman_edit_api_key').on('click', function() {
+                $('.docdownman-api-key-wrapper').hide();
+                $('.docdownman-api-key-edit').show();
+                $('#docdownman_email_api_key_edit').focus();
             });
 
             // Save API key
-            $('#ddmanager_save_api_key, #docdownman_save_api_key').on('click', function() {
-                var newKey = $('#ddmanager_email_api_key_edit, #docdownman_email_api_key_edit').val();
+            $('#docdownman_save_api_key').on('click', function() {
+                var newKey = $('#docdownman_email_api_key_edit').val();
                 if (newKey) {
                     // Update hidden input with actual value
-                    $('#ddmanager_email_api_key, #docdownman_email_api_key').val(newKey);
+                    $('#docdownman_email_api_key').val(newKey);
                     
                     // Show masked version in display field
                     var maskedKey = '';
@@ -40,24 +40,24 @@
                     } else {
                         maskedKey = newKey.replace(/./g, '*');
                     }
-                    $('#ddmanager_email_api_key_display, #docdownman_email_api_key_display').val(maskedKey);
+                    $('#docdownman_email_api_key_display').val(maskedKey);
                     
                     // Reset edit field and hide edit form
-                    $('#ddmanager_email_api_key_edit, #docdownman_email_api_key_edit').val('');
-                    $('.ddmanager-api-key-edit, .docdownman-api-key-edit').hide();
-                    $('.ddmanager-api-key-wrapper, .docdownman-api-key-wrapper').show();
+                    $('#docdownman_email_api_key_edit').val('');
+                    $('.docdownman-api-key-edit').hide();
+                    $('.docdownman-api-key-wrapper').show();
                 }
             });
 
             // Cancel API key edit
-            $('#ddmanager_cancel_api_key, #docdownman_cancel_api_key').on('click', function() {
-                $('#ddmanager_email_api_key_edit, #docdownman_email_api_key_edit').val('');
-                $('.ddmanager-api-key-edit, .docdownman-api-key-edit').hide();
-                $('.ddmanager-api-key-wrapper, .docdownman-api-key-wrapper').show();
+            $('#docdownman_cancel_api_key').on('click', function() {
+                $('#docdownman_email_api_key_edit').val('');
+                $('.docdownman-api-key-edit').hide();
+                $('.docdownman-api-key-wrapper').show();
             });
         }
         // Add new document file row
-        $('.ddmanager-add-document-file, .docdownman-add-document-file').on('click', function() {
+        $('.docdownman-add-document-file').on('click', function() {
             var timestamp = new Date().getTime();
             var newRow = $('<tr></tr>');
             
@@ -66,7 +66,7 @@
                 $('<td></td>').append(
                     $('<input>').attr({
                         type: 'text',
-                        name: 'ddmanager_document_files[' + timestamp + '][title]',
+                        name: 'docdownman_document_files[' + timestamp + '][title]',
                         class: 'regular-text',
                         required: 'required',
                         placeholder: 'Document Title'
@@ -74,7 +74,7 @@
                 ).append(
                     $('<input>').attr({
                         type: 'hidden',
-                        name: 'ddmanager_document_files[' + timestamp + '][id]',
+                        name: 'docdownman_document_files[' + timestamp + '][id]',
                         value: 'document-' + timestamp
                     })
                 )
@@ -85,7 +85,7 @@
                 $('<td></td>').append(
                     $('<input>').attr({
                         type: 'url',
-                        name: 'ddmanager_document_files[' + timestamp + '][url]',
+                        name: 'docdownman_document_files[' + timestamp + '][url]',
                         class: 'regular-text',
                         required: 'required',
                         placeholder: 'https://example.com/document.pdf'
@@ -103,11 +103,7 @@
             // Shortcode field
             newRow.append(
                 $('<td></td>').append(
-                    $('<code></code>').text('[ddmanager_document_download id="document-' + timestamp + '"]')
-                ).append(
-                    $('<br>')
-                ).append(
-                    $('<small></small>').append($('<em></em>').text('Legacy shortcodes also supported'))
+                    $('<code></code>').text('[docdownman_document_download id="document-' + timestamp + '"]')
                 ).append(
                     $('<span>').text('Save to generate shortcode')
                 )

@@ -42,13 +42,20 @@ class Document_Download_Manager {
     public static function activate() {
         global $wpdb;
         
-        // Use a more unique prefix for database tables
-        $table_name = $wpdb->prefix . 'ddmanager_downloads';
-        $old_table_name = $wpdb->prefix . 'docdownman_downloads';
+        // Use a unique prefix for database tables
+        $table_name = $wpdb->prefix . 'docdownman_downloads';
         
-        // Check if either table exists (new or old prefix)
-        $table_exists = $wpdb->get_var("SHOW TABLES LIKE '$table_name'") === $table_name;
-        $old_table_exists = $wpdb->get_var("SHOW TABLES LIKE '$old_table_name'") === $old_table_name;
+        // First check if we have a cached result
+        $cache_key = 'docdownman_table_exists_' . md5($table_name);
+        $table_exists = wp_cache_get($cache_key, 'document-download-manager');
+        
+        // If not in cache, check if table exists using prepare to avoid SQL injection
+        if (false === $table_exists) {
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Using caching to minimize DB calls
+            $table_exists = $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $table_name)) === $table_name;
+            // Cache check result for better performance
+            wp_cache_set($cache_key, $table_exists, 'document-download-manager', HOUR_IN_SECONDS);
+        }
         
         // Create the table if it doesn't exist
         if (!$table_exists) {
@@ -67,62 +74,15 @@ class Document_Download_Manager {
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
             dbDelta($sql);
             
-            // Cache that we've created the table with new prefix
-            wp_cache_set('ddmanager_table_created', true, 'document-download-manager', DAY_IN_SECONDS);
-            
-            // If old table exists, migrate data to the new table
-            if ($old_table_exists) {
-                $wpdb->query("INSERT INTO $table_name SELECT * FROM $old_table_name");
-                // Don't delete the old table yet, will be handled during uninstall
-            }
-        } elseif ($old_table_exists && !$table_exists) {
-            // If only the old table exists, create the new one and migrate data
-            $charset_collate = $wpdb->get_charset_collate();
-            
-            $sql = "CREATE TABLE $table_name (
-                id mediumint(9) NOT NULL AUTO_INCREMENT,
-                time datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
-                name varchar(100) NOT NULL,
-                email varchar(100) NOT NULL,
-                file_name varchar(255) NOT NULL,
-                file_url varchar(255) NOT NULL,
-                PRIMARY KEY  (id)
-            ) $charset_collate;";
-            
-            require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-            dbDelta($sql);
-            
-            // Migrate data
-            $wpdb->query("INSERT INTO $table_name SELECT * FROM $old_table_name");
-            
-            // Cache that we've created the table with new prefix
-            wp_cache_set('ddmanager_table_created', true, 'document-download-manager', DAY_IN_SECONDS);
-        }
-        
-        // For backward compatibility, also set the old cache key
-        if (wp_cache_get('ddmanager_table_created', 'document-download-manager')) {
+            // Cache that we've created the table
             wp_cache_set('docdownman_table_created', true, 'document-download-manager', DAY_IN_SECONDS);
         }
         
-        // Migrate options from old prefixes to new prefix
-        $old_document_files = get_option('docdownman_document_files');
-        $very_old_document_files = get_option('document_download_files');
+        // Migrate options
         
-        // Check if we need to migrate from old prefix
-        if (!get_option('ddmanager_document_files') && $old_document_files) {
-            update_option('ddmanager_document_files', $old_document_files);
-        }
+        // No migration needed as we're using only the new prefix
         
-        // Check if we need to migrate from very old prefix
-        if (!get_option('ddmanager_document_files') && $very_old_document_files) {
-            update_option('ddmanager_document_files', $very_old_document_files);
-        }
-        
-        // Migrate email API key if it exists
-        $old_email_api_key = get_option('docdownman_email_api_key');
-        if (!get_option('ddmanager_email_api_key') && $old_email_api_key) {
-            update_option('ddmanager_email_api_key', $old_email_api_key);
-        }
+        // No migration needed as we're using only the new prefix
     }
 
     /**
@@ -138,19 +98,26 @@ class Document_Download_Manager {
     public static function uninstall() {
         global $wpdb;
         
-        // Drop both old and new downloads tables
-        $new_table_name = $wpdb->prefix . 'ddmanager_downloads';
-        $old_table_name = $wpdb->prefix . 'docdownman_downloads';
+        // Drop the downloads table
+        $table_name = $wpdb->prefix . 'docdownman_downloads';
         
-        $wpdb->query("DROP TABLE IF EXISTS $new_table_name");
-        $wpdb->query("DROP TABLE IF EXISTS $old_table_name");
+        // Use WordPress schema API if available (WordPress 3.9+)
+        if (function_exists('dbDelta')) {
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.DirectDatabaseQuery.DirectQuery -- Necessary for plugin uninstall
+            $wpdb->query($wpdb->prepare("DROP TABLE IF EXISTS %s", $table_name));
+        } else {
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.DirectDatabaseQuery.DirectQuery -- Necessary for plugin uninstall
+            $wpdb->query($wpdb->prepare("DROP TABLE IF EXISTS %s", $table_name));
+        }
         
-        // Delete options with both prefixes
-        delete_option('ddmanager_document_files');
+        // Clear any cached table existence checks
+        $cache_key = 'docdownman_table_exists_' . md5($table_name);
+        wp_cache_delete($cache_key, 'document-download-manager');
+        
+        // Delete options
         delete_option('docdownman_document_files');
         
         // Clear any cached data
-        wp_cache_delete('ddmanager_table_created', 'document-download-manager');
         wp_cache_delete('docdownman_table_created', 'document-download-manager');
     }
 }
