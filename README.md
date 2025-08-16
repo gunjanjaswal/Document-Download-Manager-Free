@@ -6,7 +6,6 @@ A WordPress plugin to manage Excel and PDF document downloads with user informat
 
 - **Multiple Document Types** - Support for Excel (.xlsx, .xls, .csv) and PDF (.pdf) files
 - **Lead Generation** - Collect user information before allowing downloads
-- **Download Tracking** - Track all downloads with user details and timestamps
 - **Shortcode Support** - Easy integration with shortcodes
 - **Responsive Design** - Works on all devices
 - **GDPR Compliant** - Clear consent for data collection
@@ -14,10 +13,9 @@ A WordPress plugin to manage Excel and PDF document downloads with user informat
 ## Pro Version Features
 
 ### 🚀 Advanced Lead Management
-- **Email Marketing Integration** - Seamlessly connect with popular email marketing services like Mailchimp, ConvertKit, and ActiveCampaign
+- **Mailchimp Integration** - Seamlessly connect with Mailchimp email marketing service
 - **Automatic List Building** - Automatically add document downloaders to your email lists
-- **Smart Segmentation** - Segment subscribers based on which documents they download
-- **One-Click Sync** - Sync existing download records to your email platform with one click
+- **One-Click Sync** - Sync existing download records to your Mailchimp list with one click
 
 ### 🎨 Enhanced Customization
 - **Button Color Customization** - Change download button colors to match your brand
@@ -73,22 +71,6 @@ Use the shortcode `[docdownman_document_download]` to display a download button 
 - **Excel Files:** .xlsx, .xls, .xlsm, .xlsb, .csv
 - **PDF Files:** .pdf
 
-## Changelog
-
-### Version 1.1.0
-- Added Upgrade to Premium and Buy Me a Coffee links in plugin admin page
-- Added plugin action links on wp-admin/plugins.php page
-- Updated author URL to www.gunjanjaswal.me
-- Updated plugin URL to GitHub repository
-- Updated upgrade links to use Freemius checkout URL
-- Removed external services section for WordPress.org compliance
-- Cleaned up documentation and removed legacy shortcode references
-- Removed unused premium files for WordPress.org compliance
-- Fixed WordPress coding standards warnings and nonce verification issues
-- Enhanced plugin home page with prominent support and upgrade links
-
-### Version 1.0.0
-- Initial release
 
 ## Author
 

@@ -19,7 +19,6 @@ Document Download Manager is a powerful yet simple plugin that helps you manage 
 
 * **Multiple Document Types** - Support for Excel (.xlsx, .xls, .csv) and PDF (.pdf) files
 * **Lead Generation** - Collect user information before allowing downloads
-* **Download Tracking** - Track all downloads with user details and timestamps
 * **Shortcode Support** - Easy integration with shortcodes
 * **Responsive Design** - Works on all devices
 * **GDPR Compliant** - Clear consent for data collection
@@ -27,10 +26,14 @@ Document Download Manager is a powerful yet simple plugin that helps you manage 
 
 ### Pro Version Features
 
-* **Email Marketing Integration** - Connect with popular email marketing services
-* **Change Button Color** - Advanced form customization options to change button color
-* **Delete Records** - Ability to delete individual download records
-* **Export CSV** - Export all download records to CSV file
+* **Mailchimp Integration** - Seamlessly connect with Mailchimp email marketing service
+* **Automatic List Building** - Automatically add document downloaders to your email lists
+* **One-Click Sync** - Sync existing download records to your Mailchimp list with one click
+* **Button Color Customization** - Change download button colors to match your brand
+* **Custom Button Text** - Personalize button text for different documents
+* **Modal Title Customization** - Customize the popup form title text
+* **Delete Records** - Ability to delete individual download records for GDPR compliance
+* **Export CSV** - Export all download records to CSV file for analysis
 * **Premium Support** - Priority support from our team
 
 [Upgrade to Pro](https://checkout.freemius.com/plugin/19168/plan/31773/) | [Buy Me a Coffee](https://www.buymeacoffee.com/gunjanjaswal)
