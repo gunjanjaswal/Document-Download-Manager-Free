@@ -1,10 +1,10 @@
 === Document Download Manager ===
 Contributors: gunjanjaswal
-Donate link: https://wordpress.org/plugins/document-download-manager/
+Donate link: https://www.buymeacoffee.com/gunjanjaswal
 Tags: document, download, pdf, form, lead-generation
 Requires at least: 5.0
 Tested up to: 6.8
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -87,26 +87,24 @@ Yes, the plugin includes a consent checkbox and clear information about how the 
 3. User information popup form
 4. Download records page
 
-== External Services ==
-
-The premium version of this plugin connects to an external license verification service to validate license keys. This connection is only made when activating or deactivating a premium license.
-
-**License Verification Service:**
-* **What it does:** Validates your premium license key to unlock premium features
-* **When data is sent:** Only when you activate or deactivate your license in the admin dashboard
-* **What data is sent:** Your license key, site URL, and WordPress version
-* **Service provider:** Gunjan Jaswal (plugin author)
-* **Terms of service:** https://gunjanjaswal.me/terms-of-service/
-* **Privacy policy:** https://gunjanjaswal.me/privacy-policy/
-
-No user data from document downloads is ever sent to external servers. All download records are stored exclusively in your WordPress database.
 
 == Changelog ==
+
+= 1.1.0 =
+* Added Upgrade to Premium link in plugin admin page
+* Added Buy Me a Coffee donate link
+* Updated author URL to www.gunjanjaswal.me
+* Updated plugin URL to GitHub repository
+* Removed external services section for WordPress.org compliance
+* Enhanced plugin home page with support links
 
 = 1.0.0 =
 * Initial release
 
 == Upgrade Notice ==
+
+= 1.1.0 =
+Added support links and updated URLs. Enhanced admin interface with upgrade and donate options.
 
 = 1.0.0 =
 Initial release of Document Download Manager.

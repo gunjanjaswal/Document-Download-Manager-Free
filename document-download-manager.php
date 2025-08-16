@@ -1,11 +1,11 @@
 <?php
 /**
  * Plugin Name: Document Download Manager
- * Plugin URI: https://wordpress.org/plugins/document-download-manager/
+ * Plugin URI: https://github.com/gunjanjaswal/Document-Download-Manager-Free
  * Description: A plugin to manage and track document downloads. Collect user information before allowing downloads.
- * Version: 1.0.0
+ * Version: 1.1.0
  * Author: Gunjan Jaswaal
- * Author URI: https://profiles.wordpress.org/gunjanjaswal/
+ * Author URI: https://www.gunjanjaswal.me
  * License: GPL-2.0+
  * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain: document-download-manager
@@ -35,7 +35,7 @@ if (!defined('ABSPATH')) {
 // Define plugin constants with a unique prefix
 define('DOCDOWNMAN_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('DOCDOWNMAN_PLUGIN_URL', plugin_dir_url(__FILE__));
-define('DOCDOWNMAN_VERSION', '1.0.0');
+define('DOCDOWNMAN_VERSION', '1.1.0');
 
 // Using only the unique prefix docdownman
 
@@ -54,7 +54,7 @@ require_once DOCDOWNMAN_PLUGIN_DIR . 'includes/class-document-download-manager-p
  * @return string The URL to upgrade to the premium version
  */
 function docdownman_get_upgrade_url() {
-    return 'https://gunjanjaswal.me/downloads/document-download-manager-premium/';
+    return 'https://checkout.freemius.com/plugin/19168/plan/31773/';
 }
 
 // Using only the unique prefix docdownman
@@ -63,6 +63,25 @@ function docdownman_get_upgrade_url() {
 register_activation_hook(__FILE__, array('Document_Download_Manager', 'activate'));
 register_deactivation_hook(__FILE__, array('Document_Download_Manager', 'deactivate'));
 // Note: Uninstall is handled by uninstall.php
+
+/**
+ * Add plugin action links on plugins page
+ * 
+ * @param array $links Existing plugin action links
+ * @return array Modified plugin action links
+ */
+function docdownman_add_plugin_action_links($links) {
+    $upgrade_link = '<a href="https://checkout.freemius.com/plugin/19168/plan/31773/" target="_blank" style="color: #d54e21; font-weight: bold;">' . __('Upgrade to Pro', 'document-download-manager') . '</a>';
+    $donate_link = '<a href="https://www.buymeacoffee.com/gunjanjaswal" target="_blank" style="color: #0073aa; font-weight: bold;">' . __('Buy Me Coffee', 'document-download-manager') . '</a>';
+    
+    // Add links at the beginning of the array
+    array_unshift($links, $upgrade_link, $donate_link);
+    
+    return $links;
+}
+
+// Add the action links filter
+add_filter('plugin_action_links_' . plugin_basename(__FILE__), 'docdownman_add_plugin_action_links');
 
 // Initialize the plugin with more unique prefix
 function docdownman_initialize() {

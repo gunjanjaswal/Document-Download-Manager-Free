@@ -510,6 +510,19 @@ class Document_Download_Manager_Admin {
         <div class="wrap">
             <h1>Document Download Manager</h1>
             
+            <!-- Upgrade and Donate Links -->
+            <div class="docdownman-header-actions" style="margin: 20px 0; padding: 15px; background: #f9f9f9; border-radius: 5px;">
+                <p style="margin: 0 0 10px 0;"><strong>Support the Development:</strong></p>
+                <a href="https://checkout.freemius.com/plugin/19168/plan/31773/" class="button button-primary" target="_blank" style="margin-right: 10px;">
+                    <span class="dashicons dashicons-star-filled" style="vertical-align: middle; margin-right: 5px;"></span>
+                    Upgrade to Premium
+                </a>
+                <a href="https://www.buymeacoffee.com/gunjanjaswal" class="button button-secondary" target="_blank">
+                    <span class="dashicons dashicons-coffee" style="vertical-align: middle; margin-right: 5px;"></span>
+                    Buy Me a Coffee
+                </a>
+            </div>
+            
             <?php 
             // Show both old and new settings errors for backward compatibility
             settings_errors('docdownman_settings'); 
