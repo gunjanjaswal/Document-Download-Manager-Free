@@ -3,9 +3,9 @@ Contributors: gunjanjaswal
 Donate link: https://www.buymeacoffee.com/gunjanjaswal
 Tags: document, download, pdf, form, lead-generation
 Requires at least: 5.0
-Tested up to: 6.8
-Stable tag: 1.1.0
-Requires PHP: 7.2
+Tested up to: 6.9
+Stable tag: 1.2.1
+Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -92,6 +92,18 @@ Yes, the plugin includes a consent checkbox and clear information about how the 
 
 == Changelog ==
 
+= 1.2.1 =
+* Fixed WordPress coding standards: Added proper prefixes to all global variables in uninstall.php
+* Variable names now use 'docdownman_' prefix for compliance
+* Improved code quality and WordPress.org plugin check compatibility
+
+= 1.2.0 =
+* Updated for WordPress 6.9 compatibility
+* Updated minimum PHP requirement to 7.4
+* Added proper plugin headers (Requires at least, Requires PHP, Tested up to)
+* Enhanced WordPress coding standards compliance
+* Verified compatibility with WordPress 6.9 features
+
 = 1.1.0 =
 * Added Upgrade to Premium and Buy Me a Coffee links in plugin admin page
 * Added plugin action links on wp-admin/plugins.php page
@@ -108,6 +120,12 @@ Yes, the plugin includes a consent checkbox and clear information about how the 
 * Initial release
 
 == Upgrade Notice ==
+
+= 1.2.1 =
+Coding standards fix for WordPress.org plugin check compliance.
+
+= 1.2.0 =
+Compatibility update for WordPress 6.9. Requires PHP 7.4 or higher.
 
 = 1.1.0 =
 Added support links and updated URLs. Enhanced admin interface with upgrade and donate options.

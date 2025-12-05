@@ -83,6 +83,35 @@ Use the shortcode `[docdownman_document_download]` to display a download button 
 - [Buy Me a Coffee](https://www.buymeacoffee.com/gunjanjaswal)
 - [Upgrade to Premium](https://checkout.freemius.com/plugin/19168/plan/31773/)
 
+## Changelog
+
+### Version 1.2.1
+- Fixed WordPress coding standards: Added proper prefixes to all global variables in uninstall.php
+- Variable names now use 'docdownman_' prefix for compliance
+- Improved code quality and WordPress.org plugin check compatibility
+
+### Version 1.2.0
+- Updated for WordPress 6.9 compatibility
+- Updated minimum PHP requirement to 7.4
+- Added proper plugin headers (Requires at least, Requires PHP, Tested up to)
+- Enhanced WordPress coding standards compliance
+- Verified compatibility with WordPress 6.9 features
+
+### Version 1.1.0
+- Added Upgrade to Premium and Buy Me a Coffee links in plugin admin page
+- Added plugin action links on wp-admin/plugins.php page
+- Updated author URL to www.gunjanjaswal.me
+- Updated plugin URL to GitHub repository
+- Updated upgrade links to use Freemius checkout URL
+- Removed external services section for WordPress.org compliance
+- Cleaned up documentation and removed legacy shortcode references
+- Removed unused premium files for WordPress.org compliance
+- Fixed WordPress coding standards warnings and nonce verification issues
+- Enhanced plugin home page with prominent support and upgrade links
+
+### Version 1.0.0
+- Initial release
+
 ## License
 
 This plugin is licensed under the GPL v2 or later.

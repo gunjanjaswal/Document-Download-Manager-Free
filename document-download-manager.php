@@ -3,15 +3,16 @@
  * Plugin Name: Document Download Manager
  * Plugin URI: https://github.com/gunjanjaswal/Document-Download-Manager-Free
  * Description: A plugin to manage and track document downloads. Collect user information before allowing downloads.
- * Version: 1.1.0
+ * Version: 1.2.1
  * Author: Gunjan Jaswaal
  * Author URI: https://www.gunjanjaswal.me
  * License: GPL-2.0+
  * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain: document-download-manager
  * Domain Path: /languages
- * License: GPL v2 or later
- * License URI: https://www.gnu.org/licenses/gpl-2.0.html
+ * Requires at least: 5.0
+ * Requires PHP: 7.4
+ * Tested up to: 6.9
  *
  * Document Download Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +36,7 @@ if (!defined('ABSPATH')) {
 // Define plugin constants with a unique prefix
 define('DOCDOWNMAN_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('DOCDOWNMAN_PLUGIN_URL', plugin_dir_url(__FILE__));
-define('DOCDOWNMAN_VERSION', '1.1.0');
+define('DOCDOWNMAN_VERSION', '1.2.1');
 
 // Using only the unique prefix docdownman
 
