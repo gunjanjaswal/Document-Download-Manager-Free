@@ -4,7 +4,7 @@ Donate link: https://ko-fi.com/gunjanjaswal
 Tags: document, download, pdf, form, lead-generation
 Requires at least: 5.0
 Tested up to: 7.0
-Stable tag: 1.2.2
+Stable tag: 1.2.3
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -92,6 +92,10 @@ Yes, the plugin includes a consent checkbox and clear information about how the 
 
 == Changelog ==
 
+= 1.2.3 =
+* WordPress 7.0 iframed-editor hygiene: scoped admin CSS/JS enqueues (`enqueue_styles`, `enqueue_scripts`) to the plugin's own admin pages so nothing leaks into the editor iframe or unrelated screens.
+* Plugin is shortcode-driven with no editor-canvas integration, so the WP 7.0 iframed editor has no functional impact.
+
 = 1.2.2 =
 * Updated "Tested up to" to WordPress 7.0
 * Added direct file access protection (ABSPATH guard) to all include files
@@ -125,6 +129,9 @@ Yes, the plugin includes a consent checkbox and clear information about how the 
 * Initial release
 
 == Upgrade Notice ==
+
+= 1.2.3 =
+WordPress 7.0 iframed-editor hygiene: admin assets now scoped only to the plugin's own admin pages.
 
 = 1.2.2 =
 Compatibility with WordPress 7.0, security hardening, and donation link updated to Ko-fi.

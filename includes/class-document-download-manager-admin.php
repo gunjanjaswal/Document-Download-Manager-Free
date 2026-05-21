@@ -268,9 +268,30 @@ class Document_Download_Manager_Admin {
     }
     
     /**
-     * Enqueue admin styles
+     * Check if the current admin screen belongs to this plugin.
+     *
+     * The block editor runs inside an iframe in WordPress 7.0. This plugin
+     * provides no editor canvas integration (it is shortcode-driven), so we
+     * scope admin assets tightly to the plugin's own admin screens to avoid
+     * any leakage into the editor iframe or unrelated admin pages.
+     *
+     * @since 1.2.3
+     * @param string $hook Current admin page hook.
+     * @return bool True if this is one of the plugin's own admin screens.
      */
-    public function enqueue_styles() {
+    private function is_plugin_admin_screen($hook) {
+        return is_string($hook) && (false !== strpos($hook, 'docdownman') || false !== strpos($hook, 'document-download'));
+    }
+
+    /**
+     * Enqueue admin styles
+     *
+     * @param string $hook Current admin page hook.
+     */
+    public function enqueue_styles($hook = '') {
+        if (!$this->is_plugin_admin_screen($hook)) {
+            return;
+        }
         wp_register_style('docdownman-admin-css', DOCDOWNMAN_PLUGIN_URL . 'assets/css/admin.css', array(), DOCDOWNMAN_VERSION);
         wp_enqueue_style('docdownman-admin-css');
     }
@@ -374,7 +395,10 @@ class Document_Download_Manager_Admin {
     /**
      * Enqueue admin scripts
      */
-    public function enqueue_scripts() {
+    public function enqueue_scripts($hook = '') {
+        if (!$this->is_plugin_admin_screen($hook)) {
+            return;
+        }
         wp_register_script('docdownman-admin-js', DOCDOWNMAN_PLUGIN_URL . 'assets/js/admin.js', array('jquery'), DOCDOWNMAN_VERSION, true);
         wp_enqueue_script('docdownman-admin-js');
         

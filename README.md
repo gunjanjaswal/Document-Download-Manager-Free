@@ -85,6 +85,10 @@ Use the shortcode `[docdownman_document_download]` to display a download button 
 
 ## Changelog
 
+### Version 1.2.3
+- WordPress 7.0 iframed-editor hygiene: scoped admin CSS/JS enqueues to the plugin's own admin pages.
+- Shortcode-driven plugin with no editor-canvas integration, so the WP 7.0 iframed editor has no functional impact.
+
 ### Version 1.2.2
 - Updated "Tested up to" to WordPress 7.0
 - Added direct file access protection (ABSPATH guard) to all include files
