@@ -74,7 +74,7 @@ Use the shortcode `[docdownman_document_download]` to display a download button 
 
 ## Author
 
-**Gunjan Jaswaal**
+**Gunjan Jaswal**
 - Website: [www.gunjanjaswal.me](https://www.gunjanjaswal.me)
 - Email: hello@gunjanjaswal.me
 
