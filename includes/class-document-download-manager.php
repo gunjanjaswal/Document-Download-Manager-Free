@@ -2,6 +2,11 @@
 /**
  * Main plugin class
  */
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
 class Document_Download_Manager {
     /**
      * The loader that's responsible for maintaining and registering all hooks

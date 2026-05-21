@@ -3,7 +3,7 @@
  * Plugin Name: Document Download Manager
  * Plugin URI: https://github.com/gunjanjaswal/Document-Download-Manager-Free
  * Description: A plugin to manage and track document downloads. Collect user information before allowing downloads.
- * Version: 1.2.1
+ * Version: 1.2.2
  * Author: Gunjan Jaswaal
  * Author URI: https://www.gunjanjaswal.me
  * License: GPL-2.0+
@@ -12,7 +12,7 @@
  * Domain Path: /languages
  * Requires at least: 5.0
  * Requires PHP: 7.4
- * Tested up to: 6.9
+ * Tested up to: 7.0
  *
  * Document Download Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ if (!defined('ABSPATH')) {
 // Define plugin constants with a unique prefix
 define('DOCDOWNMAN_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('DOCDOWNMAN_PLUGIN_URL', plugin_dir_url(__FILE__));
-define('DOCDOWNMAN_VERSION', '1.2.1');
+define('DOCDOWNMAN_VERSION', '1.2.2');
 
 // Using only the unique prefix docdownman
 
@@ -73,7 +73,7 @@ register_deactivation_hook(__FILE__, array('Document_Download_Manager', 'deactiv
  */
 function docdownman_add_plugin_action_links($links) {
     $upgrade_link = '<a href="https://checkout.freemius.com/plugin/19168/plan/31773/" target="_blank" style="color: #d54e21; font-weight: bold;">' . __('Upgrade to Pro', 'document-download-manager') . '</a>';
-    $donate_link = '<a href="https://www.buymeacoffee.com/gunjanjaswal" target="_blank" style="color: #0073aa; font-weight: bold;">' . __('Buy Me Coffee', 'document-download-manager') . '</a>';
+    $donate_link = '<a href="https://ko-fi.com/gunjanjaswal" target="_blank" style="color: #0073aa; font-weight: bold;">' . __('Support on Ko-fi', 'document-download-manager') . '</a>';
     
     // Add links at the beginning of the array
     array_unshift($links, $upgrade_link, $donate_link);

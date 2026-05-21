@@ -35,7 +35,7 @@ A WordPress plugin to manage Excel and PDF document downloads with user informat
 - **Advanced Documentation** - Comprehensive guides and tutorials
 - **White-label Options** - Remove plugin branding (Enterprise plan)
 
-[Upgrade to Pro](https://checkout.freemius.com/plugin/19168/plan/31773/) | [Buy Me a Coffee](https://www.buymeacoffee.com/gunjanjaswal)
+[Upgrade to Pro](https://checkout.freemius.com/plugin/19168/plan/31773/) | [Support on Ko-fi](https://ko-fi.com/gunjanjaswal)
 
 ## Installation
 
@@ -80,10 +80,15 @@ Use the shortcode `[docdownman_document_download]` to display a download button 
 
 ## Support
 
-- [Buy Me a Coffee](https://www.buymeacoffee.com/gunjanjaswal)
+- [Support on Ko-fi](https://ko-fi.com/gunjanjaswal)
 - [Upgrade to Premium](https://checkout.freemius.com/plugin/19168/plan/31773/)
 
 ## Changelog
+
+### Version 1.2.2
+- Updated "Tested up to" to WordPress 7.0
+- Added direct file access protection (ABSPATH guard) to all include files
+- Replaced Buy Me a Coffee links with Ko-fi (https://ko-fi.com/gunjanjaswal)
 
 ### Version 1.2.1
 - Fixed WordPress coding standards: Added proper prefixes to all global variables in uninstall.php
@@ -98,7 +103,7 @@ Use the shortcode `[docdownman_document_download]` to display a download button 
 - Verified compatibility with WordPress 6.9 features
 
 ### Version 1.1.0
-- Added Upgrade to Premium and Buy Me a Coffee links in plugin admin page
+- Added Upgrade to Premium and donation links in plugin admin page
 - Added plugin action links on wp-admin/plugins.php page
 - Updated author URL to www.gunjanjaswal.me
 - Updated plugin URL to GitHub repository

@@ -1,10 +1,10 @@
 === Document Download Manager ===
 Contributors: gunjanjaswal
-Donate link: https://www.buymeacoffee.com/gunjanjaswal
+Donate link: https://ko-fi.com/gunjanjaswal
 Tags: document, download, pdf, form, lead-generation
 Requires at least: 5.0
-Tested up to: 6.9
-Stable tag: 1.2.1
+Tested up to: 7.0
+Stable tag: 1.2.2
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -36,7 +36,7 @@ Document Download Manager is a powerful yet simple plugin that helps you manage 
 * **Export CSV** - Export all download records to CSV file for analysis
 * **Premium Support** - Priority support from our team
 
-[Upgrade to Pro](https://checkout.freemius.com/plugin/19168/plan/31773/) | [Buy Me a Coffee](https://www.buymeacoffee.com/gunjanjaswal)
+[Upgrade to Pro](https://checkout.freemius.com/plugin/19168/plan/31773/) | [Support on Ko-fi](https://ko-fi.com/gunjanjaswal)
 
 
 ### How It Works
@@ -92,6 +92,11 @@ Yes, the plugin includes a consent checkbox and clear information about how the 
 
 == Changelog ==
 
+= 1.2.2 =
+* Updated "Tested up to" to WordPress 7.0
+* Added direct file access protection (ABSPATH guard) to all include files
+* Replaced Buy Me a Coffee links with Ko-fi (https://ko-fi.com/gunjanjaswal)
+
 = 1.2.1 =
 * Fixed WordPress coding standards: Added proper prefixes to all global variables in uninstall.php
 * Variable names now use 'docdownman_' prefix for compliance
@@ -105,7 +110,7 @@ Yes, the plugin includes a consent checkbox and clear information about how the 
 * Verified compatibility with WordPress 6.9 features
 
 = 1.1.0 =
-* Added Upgrade to Premium and Buy Me a Coffee links in plugin admin page
+* Added Upgrade to Premium and donation links in plugin admin page
 * Added plugin action links on wp-admin/plugins.php page
 * Updated author URL to www.gunjanjaswal.me
 * Updated plugin URL to GitHub repository (https://github.com/gunjanjaswal/Document-Download-Manager-Free)
@@ -120,6 +125,9 @@ Yes, the plugin includes a consent checkbox and clear information about how the 
 * Initial release
 
 == Upgrade Notice ==
+
+= 1.2.2 =
+Compatibility with WordPress 7.0, security hardening, and donation link updated to Ko-fi.
 
 = 1.2.1 =
 Coding standards fix for WordPress.org plugin check compliance.

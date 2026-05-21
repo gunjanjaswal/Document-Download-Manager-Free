@@ -2,6 +2,11 @@
 /**
  * Admin-specific functionality of the plugin.
  */
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
 class Document_Download_Manager_Admin {
     
     /**
@@ -515,15 +520,19 @@ class Document_Download_Manager_Admin {
             <!-- Upgrade and Donate Links -->
             <div class="docdownman-header-actions" style="margin: 20px 0; padding: 15px; background: #f9f9f9; border-radius: 5px;">
                 <p style="margin: 0 0 10px 0;"><strong>Support the Development:</strong></p>
-                <a href="https://checkout.freemius.com/plugin/19168/plan/31773/" class="button button-primary" target="_blank" style="margin-right: 10px;">
-                    <span class="dashicons dashicons-star-filled" style="vertical-align: middle; margin-right: 5px;"></span>
-                    Upgrade to Premium
+                <a href="https://checkout.freemius.com/plugin/19168/plan/31773/" class="button button-primary docdownman-icon-btn" target="_blank" style="margin-right: 10px;">
+                    <span class="dashicons dashicons-star-filled"></span>
+                    <span>Upgrade to Premium</span>
                 </a>
-                <a href="https://www.buymeacoffee.com/gunjanjaswal" class="button button-secondary" target="_blank">
-                    <span class="dashicons dashicons-coffee" style="vertical-align: middle; margin-right: 5px;"></span>
-                    Buy Me a Coffee
+                <a href="https://ko-fi.com/gunjanjaswal" class="button button-secondary docdownman-icon-btn" target="_blank">
+                    <span class="dashicons dashicons-heart"></span>
+                    <span>Support on Ko-fi</span>
                 </a>
             </div>
+            <style>
+                .docdownman-icon-btn { display: inline-flex; align-items: center; gap: 6px; line-height: 1; }
+                .docdownman-icon-btn .dashicons { font-size: 18px; width: 18px; height: 18px; line-height: 1; }
+            </style>
             
             <?php 
             // Show both old and new settings errors for backward compatibility

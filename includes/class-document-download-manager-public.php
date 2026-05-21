@@ -2,6 +2,11 @@
 /**
  * Public-facing functionality of the plugin.
  */
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
 class Document_Download_Manager_Public {
 
     /**
