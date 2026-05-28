@@ -1,16 +1,35 @@
-# Document Download Manager
+<div align="center">
 
-A WordPress plugin to manage Excel and PDF document downloads with user information collection via popup form.
+# 📄 Document Download Manager
 
-## Features
+### Manage Excel & PDF downloads with a lead-capture popup form — free and open source.
 
-- **Multiple Document Types** - Support for Excel (.xlsx, .xls, .csv) and PDF (.pdf) files
-- **Lead Generation** - Collect user information before allowing downloads
-- **Shortcode Support** - Easy integration with shortcodes
-- **Responsive Design** - Works on all devices
-- **GDPR Compliant** - Clear consent for data collection
+[![Version](https://img.shields.io/badge/version-1.2.3-2ea44f?style=for-the-badge)](https://wordpress.org/plugins/document-download-manager/)
+[![WordPress](https://img.shields.io/badge/WordPress-5.0%20–%207.0-21759b?style=for-the-badge&logo=wordpress&logoColor=white)](https://wordpress.org/)
+[![PHP](https://img.shields.io/badge/PHP-%E2%89%A5%207.4-8892BF?style=for-the-badge&logo=php&logoColor=white)](https://www.php.net/)
+[![License](https://img.shields.io/badge/license-GPLv2-orange?style=for-the-badge)](https://www.gnu.org/licenses/gpl-2.0.html)
 
-## Pro Version Features
+**[🌐 WordPress.org](https://wordpress.org/plugins/document-download-manager/)** • **[⭐ Upgrade to Pro](https://checkout.freemius.com/plugin/19168/plan/31773/)** • **[☕ Support on Ko-fi](https://ko-fi.com/gunjanjaswal)**
+
+</div>
+
+---
+
+## ✨ What it does
+
+Visitors click a download button → a popup form collects their details → on submit, the file downloads and the lead is logged in your WordPress database. Simple, responsive, and GDPR-friendly.
+
+## 🚀 Features
+
+- 📁 **Multiple Document Types** — Excel (.xlsx, .xls, .csv) and PDF (.pdf)
+- 📝 **Lead Generation** — Collect user information before allowing downloads
+- 🔗 **Shortcode Support** — Easy integration with any page or post
+- 📱 **Responsive Design** — Works on all devices
+- 🔒 **GDPR Compliant** — Clear consent checkbox for data collection
+
+## ⭐ Pro Version Features
+
+> Want Mailchimp sync, CSV export, record deletion, and appearance customization? **[Upgrade to Pro →](https://checkout.freemius.com/plugin/19168/plan/31773/)**
 
 ### 🚀 Advanced Lead Management
 - **Mailchimp Integration** - Seamlessly connect with Mailchimp email marketing service
