@@ -12,7 +12,7 @@
  * Domain Path: /languages
  * Requires at least: 5.0
  * Requires PHP: 7.4
- * Tested up to: 7.0
+ * Tested up to: 7.1
  *
  * Document Download Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
