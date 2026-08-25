@@ -99,7 +99,6 @@ class Document_Download_Manager_Public {
         $is_pdf = strtolower($file_extension) === 'pdf';
         $file_type_class = $is_pdf ? 'docdownman-pdf-button' : 'docdownman-excel-button';
         
-        ob_start();
         $output = '<div class="docdownman-download-form-container">';
         $output .= '<button class="docdownman-download-button ' . esc_attr($file_type_class) . '" data-toggle="' . esc_attr($form_id) . '">';
         $output .= '<span class="dashicons dashicons-download"></span> ' . esc_html($atts['text']) . '</button>';
@@ -127,7 +126,6 @@ class Document_Download_Manager_Public {
         $output .= '<button type="submit" class="docdownman-submit-button">' . esc_html__('Download Now', 'document-download-manager') . '</button>';
         $output .= '</div>';
         $output .= '</form>';
-        $output .= '</div>';
         $output .= '</div>';
         $output .= '</div>';
         $output .= '</div>';

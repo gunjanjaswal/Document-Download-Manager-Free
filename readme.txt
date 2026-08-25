@@ -4,7 +4,7 @@ Donate link: https://ko-fi.com/gunjanjaswal
 Tags: document, download, pdf, form, lead-generation
 Requires at least: 5.0
 Tested up to: 7.1
-Stable tag: 1.2.3
+Stable tag: 1.2.4
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -91,6 +91,10 @@ Yes, the plugin includes a consent checkbox and clear information about how the 
 
 
 == Changelog ==
+
+= 1.2.4 =
+* Fixed a stray closing div in the shortcode markup that closed the surrounding page wrapper too early and broke the layout of everything after the download button. This was most visible on pages built with Elementor and other page builders.
+* Removed an unclosed output buffer in the shortcode render that could interfere with page builders' own output buffering.
 
 = 1.2.3 =
 * WordPress 7.0 iframed-editor hygiene: scoped admin CSS/JS enqueues (`enqueue_styles`, `enqueue_scripts`) to the plugin's own admin pages so nothing leaks into the editor iframe or unrelated screens.

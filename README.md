@@ -104,6 +104,10 @@ Use the shortcode `[docdownman_document_download]` to display a download button 
 
 ## Changelog
 
+### Version 1.2.4
+- Fixed a stray closing div in the shortcode markup that closed the surrounding page wrapper too early and broke the layout of everything after the download button. This was most visible on pages built with Elementor and other page builders.
+- Removed an unclosed output buffer in the shortcode render that could interfere with page builders' own output buffering.
+
 ### Version 1.2.3
 - WordPress 7.0 iframed-editor hygiene: scoped admin CSS/JS enqueues to the plugin's own admin pages.
 - Shortcode-driven plugin with no editor-canvas integration, so the WP 7.0 iframed editor has no functional impact.
