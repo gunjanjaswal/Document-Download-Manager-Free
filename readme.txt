@@ -120,7 +120,7 @@ Yes, the plugin includes a consent checkbox and clear information about how the 
 = 1.1.0 =
 * Added Upgrade to Premium and donation links in plugin admin page
 * Added plugin action links on wp-admin/plugins.php page
-* Updated author URL to www.gunjanjaswal.me
+* Updated author URL to gunjanjaswal.me
 * Updated plugin URL to GitHub repository (https://github.com/gunjanjaswal/Document-Download-Manager-Free)
 * Updated upgrade links to use Freemius checkout URL
 * Removed external services section for WordPress.org compliance

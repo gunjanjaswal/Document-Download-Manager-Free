@@ -94,7 +94,7 @@ Use the shortcode `[docdownman_document_download]` to display a download button 
 ## Author
 
 **Gunjan Jaswal**
-- Website: [www.gunjanjaswal.me](https://www.gunjanjaswal.me)
+- Website: [gunjanjaswal.me](https://gunjanjaswal.me)
 - Email: hello@gunjanjaswal.me
 
 ## Support
@@ -132,7 +132,7 @@ Use the shortcode `[docdownman_document_download]` to display a download button 
 ### Version 1.1.0
 - Added Upgrade to Premium and donation links in plugin admin page
 - Added plugin action links on wp-admin/plugins.php page
-- Updated author URL to www.gunjanjaswal.me
+- Updated author URL to gunjanjaswal.me
 - Updated plugin URL to GitHub repository
 - Updated upgrade links to use Freemius checkout URL
 - Removed external services section for WordPress.org compliance

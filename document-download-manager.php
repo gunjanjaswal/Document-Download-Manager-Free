@@ -5,7 +5,7 @@
  * Description: A plugin to manage and track document downloads. Collect user information before allowing downloads.
  * Version: 1.2.4
  * Author: Gunjan Jaswal
- * Author URI: https://www.gunjanjaswal.me
+ * Author URI: https://gunjanjaswal.me
  * License: GPL-2.0+
  * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain: document-download-manager
