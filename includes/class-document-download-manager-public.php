@@ -118,7 +118,12 @@ class Document_Download_Manager_Public {
         $output .= '<input type="hidden" name="file_id" value="' . esc_attr($file_id) . '">';
         $output .= '<input type="hidden" name="file_title" value="' . esc_attr($file_data['title']) . '">';
         $output .= '<input type="hidden" name="file_url" value="' . esc_url($file_data['url']) . '">';
-        
+
+        // Honeypot: a hidden field that only automated bots tend to fill in.
+        $output .= '<div class="docdownman-hp" aria-hidden="true" style="position:absolute !important;left:-9999px !important;top:auto;width:1px;height:1px;overflow:hidden;">';
+        $output .= '<label>' . esc_html__('Leave this field empty', 'document-download-manager') . '<input type="text" name="docdownman_hp" value="" tabindex="-1" autocomplete="off"></label>';
+        $output .= '</div>';
+
         // Add hidden fields
         $output .= '<input type="hidden" name="action" value="docdownman_process_download">';
         $output .= '<input type="hidden" name="nonce" value="' . wp_create_nonce('docdownman_download_nonce') . '">';
@@ -148,7 +153,14 @@ class Document_Download_Manager_Public {
             wp_send_json_error(esc_html__('Security check failed: invalid nonce', 'document-download-manager'));
             wp_die();
         }
-        
+
+        // Honeypot: a real visitor leaves this hidden field empty. Bots fill it.
+        $honeypot = isset($_POST['docdownman_hp']) ? sanitize_text_field(wp_unslash($_POST['docdownman_hp'])) : '';
+        if ('' !== $honeypot) {
+            wp_send_json_error(esc_html__('Submission rejected.', 'document-download-manager'));
+            wp_die();
+        }
+
         // Check user permissions - anyone can download but we still check for bots
         if (!is_user_logged_in() && empty($_SERVER['HTTP_USER_AGENT'])) {
             wp_send_json_error(esc_html__('Invalid request.', 'document-download-manager'));
