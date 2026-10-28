@@ -104,6 +104,8 @@ Use the shortcode `[docdownman_document_download]` to display a download button 
 
 ## Changelog
 
+The full changelog lives in [`readme.txt`](readme.txt). Recent releases:
+
 ### Version 1.3.2
 - Tested and confirmed compatible with WordPress 7.1.4.
 
@@ -122,33 +124,6 @@ Use the shortcode `[docdownman_document_download]` to display a download button 
 - Updated "Tested up to" to WordPress 7.0
 - Added direct file access protection (ABSPATH guard) to all include files
 - Replaced Buy Me a Coffee links with Ko-fi (https://ko-fi.com/gunjanjaswal)
-
-### Version 1.2.1
-- Fixed WordPress coding standards: Added proper prefixes to all global variables in uninstall.php
-- Variable names now use 'docdownman_' prefix for compliance
-- Improved code quality and WordPress.org plugin check compatibility
-
-### Version 1.2.0
-- Updated for WordPress 6.9 compatibility
-- Updated minimum PHP requirement to 7.4
-- Added proper plugin headers (Requires at least, Requires PHP, Tested up to)
-- Enhanced WordPress coding standards compliance
-- Verified compatibility with WordPress 6.9 features
-
-### Version 1.1.0
-- Added Upgrade to Premium and donation links in plugin admin page
-- Added plugin action links on wp-admin/plugins.php page
-- Updated author URL to gunjanjaswal.me
-- Updated plugin URL to GitHub repository (https://github.com/gunjanjaswal/Document-Download-Manager-Free)
-- Updated upgrade links to use Freemius checkout URL
-- Removed external services section for WordPress.org compliance
-- Cleaned up documentation and removed legacy shortcode references
-- Removed unused premium files for WordPress.org compliance
-- Fixed WordPress coding standards warnings and nonce verification issues
-- Enhanced plugin home page with prominent support and upgrade links
-
-### Version 1.0.0
-- Initial release
 
 ## License
 
