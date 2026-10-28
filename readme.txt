@@ -3,8 +3,8 @@ Contributors: gunjanjaswal
 Donate link: https://ko-fi.com/gunjanjaswal
 Tags: document, download, pdf, form, lead-generation
 Requires at least: 5.0
-Tested up to: 7.1
-Stable tag: 1.3.1
+Tested up to: 7.1.4
+Stable tag: 1.3.2
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -91,6 +91,9 @@ Yes, the plugin includes a consent checkbox and clear information about how the 
 
 
 == Changelog ==
+
+= 1.3.2 =
+* Tested and confirmed compatible with WordPress 7.1.4.
 
 = 1.3.1 =
 * New: honeypot spam protection on the download form. It quietly blocks automated bot submissions so your lead list stays clean, with nothing for real visitors to fill in.
