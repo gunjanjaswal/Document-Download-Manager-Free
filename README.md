@@ -4,8 +4,8 @@
 
 ### Manage Excel & PDF downloads with a lead-capture popup form — free and open source.
 
-[![Version](https://img.shields.io/badge/version-1.2.3-2ea44f?style=for-the-badge)](https://wordpress.org/plugins/document-download-manager/)
-[![WordPress](https://img.shields.io/badge/WordPress-5.0%20–%207.0-21759b?style=for-the-badge&logo=wordpress&logoColor=white)](https://wordpress.org/)
+[![Version](https://img.shields.io/badge/version-1.3.2-2ea44f?style=for-the-badge)](https://wordpress.org/plugins/document-download-manager/)
+[![WordPress](https://img.shields.io/badge/WordPress-5.0%20–%207.1.4-21759b?style=for-the-badge&logo=wordpress&logoColor=white)](https://wordpress.org/)
 [![PHP](https://img.shields.io/badge/PHP-%E2%89%A5%207.4-8892BF?style=for-the-badge&logo=php&logoColor=white)](https://www.php.net/)
 [![License](https://img.shields.io/badge/license-GPLv2-orange?style=for-the-badge)](https://www.gnu.org/licenses/gpl-2.0.html)
 
@@ -104,13 +104,19 @@ Use the shortcode `[docdownman_document_download]` to display a download button 
 
 ## Changelog
 
+### Version 1.3.2
+- Tested and confirmed compatible with WordPress 7.1.4.
+
+### Version 1.3.1
+- New: honeypot spam protection on the download form. It quietly blocks automated bot submissions so your lead list stays clean, with nothing for real visitors to fill in.
+
 ### Version 1.2.4
 - Fixed a stray closing div in the shortcode markup that closed the surrounding page wrapper too early and broke the layout of everything after the download button. This was most visible on pages built with Elementor and other page builders.
 - Removed an unclosed output buffer in the shortcode render that could interfere with page builders' own output buffering.
 
 ### Version 1.2.3
-- WordPress 7.0 iframed-editor hygiene: scoped admin CSS/JS enqueues to the plugin's own admin pages.
-- Shortcode-driven plugin with no editor-canvas integration, so the WP 7.0 iframed editor has no functional impact.
+- WordPress 7.0 iframed-editor hygiene: scoped admin CSS/JS enqueues (`enqueue_styles`, `enqueue_scripts`) to the plugin's own admin pages so nothing leaks into the editor iframe or unrelated screens.
+- Plugin is shortcode-driven with no editor-canvas integration, so the WP 7.0 iframed editor has no functional impact.
 
 ### Version 1.2.2
 - Updated "Tested up to" to WordPress 7.0
@@ -133,7 +139,7 @@ Use the shortcode `[docdownman_document_download]` to display a download button 
 - Added Upgrade to Premium and donation links in plugin admin page
 - Added plugin action links on wp-admin/plugins.php page
 - Updated author URL to gunjanjaswal.me
-- Updated plugin URL to GitHub repository
+- Updated plugin URL to GitHub repository (https://github.com/gunjanjaswal/Document-Download-Manager-Free)
 - Updated upgrade links to use Freemius checkout URL
 - Removed external services section for WordPress.org compliance
 - Cleaned up documentation and removed legacy shortcode references
